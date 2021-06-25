@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <mvc:annotation-driven/>
+
+    <!-- bean으로 등록하기 위한 path -->
+    <context:component-scan base-package="controller"/>
+
+    <context:component-scan base-package="util"/>
+    <context:component-scan base-package="serviceImpl"/>
+    <context:component-scan base-package="repository"/>
+    <context:component-scan base-package="swagger"/>
+    <context:component-scan base-package="exception"/>
+
+    <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"></mvc:resources>
+    <mvc:resources location="classpath:/META-INF/resources/webjars/"  mapping="/webjars/**"></mvc:resources>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="interceptor.AuthInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
+
+        <!-- 리퀘스트마다 로드 -->

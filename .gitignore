@@ -1,0 +1,7 @@
+/out
+/lib
+/.idea
+/src/test
+/target
+project_leagueboard.iml
+src/main/resources/config/config.properties
