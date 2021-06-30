@@ -1,15 +1,15 @@
 package domain;
 
-public class PartyMember {
-    protected Long party_id;
+public class Member {
+    protected Long board_id;
     protected Long user_id;
 
-    public Long getParty_id() {
-        return party_id;
+    public Long getBoard_id() {
+        return board_id;
     }
 
-    public void setParty_id(Long party_id) {
-        this.party_id = party_id;
+    public void setBoard_id(Long board_id) {
+        this.board_id = board_id;
     }
 
     public Long getUser_id() {

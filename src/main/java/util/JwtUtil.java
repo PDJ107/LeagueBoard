@@ -1,5 +1,8 @@
 package util;
 
+import annotation.Auth;
+import exception.AuthException;
+import exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -12,7 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/** BCSD LAB 8주차 비기너 과제 JWT 토큰을 간단히 사용하는 방법을 위한 예시입니다 */
+
 @Component
 public class JwtUtil {
 
@@ -21,10 +24,12 @@ public class JwtUtil {
 
     public Long getIdFromToken(String token) throws Exception{
         if ( token == null) {
-            throw new Exception("null임"); // 여러분들만의 Exception 객체를 만들어 계층구조를 만들어보는 것도 좋은 경험일 것 같습니다.
+            //throw new Exception("null임");
+            throw new AuthException(ErrorCode.Token_Is_Null);
         }
         else if ( !token.startsWith("Bearer ") ){
-            throw new Exception("Bearer 로 시작안함");
+            //throw new Exception("Bearer 로 시작안함");
+            throw new AuthException(ErrorCode.Invalid_Bearer);
         }
         token = token.substring(7); // "Bearer " 제거
 
@@ -40,10 +45,12 @@ public class JwtUtil {
             id = claims.get("id", Long.class);
 
         }catch (ExpiredJwtException e1){
-            throw new Exception("만료됨");
+            //throw new Exception("만료됨");
+            throw new AuthException(ErrorCode.Expired_Token);
         }
         catch(Throwable e2){
-            throw new Exception("잘못됨");
+            //throw new Exception("잘못됨");
+            throw new AuthException(ErrorCode.Invalid_Token);
         }
         return id;
     }
@@ -63,24 +70,21 @@ public class JwtUtil {
         return Jwts.builder().setHeader(headers).setClaims(payloads).setExpiration(exp).signWith(SignatureAlgorithm.HS256, secret.getBytes()).compact();
     }
 
-    /** 토큰을 입력값으로 주어 Valid한지 체크하는 함수를 만들어 봅시다 */
     public boolean isValid(String token) throws Exception{
         if ( token == null) {
-            throw new Exception("null임"); // 여러분들만의 Exception 객체를 만들어 계층구조를 만들어보는 것도 좋은 경험일 것 같습니다.
+            throw new AuthException(ErrorCode.Token_Is_Null);
         }
         else if ( !token.startsWith("Bearer ") ){
-            throw new Exception("Bearer 로 시작안함");
+            throw new AuthException(ErrorCode.Invalid_Bearer);
         }
         token = token.substring(7); // "Bearer " 제거
         try {
             Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
         }catch (ExpiredJwtException e1){
-            //TODO jsonwebtoken 라이브러리의 Exception 계층에 대해서 파악해봅시다.
-            throw new Exception("만료됨");
+            throw new AuthException(ErrorCode.Expired_Token);
         }
         catch(Throwable e2){
-            //TODO jsonwebtoken 라이브러리의 Exception 계층에 대해서 파악해봅시다.
-            throw new Exception("잘못됨");
+            throw new AuthException(ErrorCode.Invalid_Token);
         }
         return true;
     }

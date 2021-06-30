@@ -1,10 +1,10 @@
 package exception;
 
-public class TestException extends RuntimeException{
+public class DefaultException extends RuntimeException{
     private String className;
     private ErrorCode errorCode;
 
-    public TestException(ErrorCode errorcode) {
+    public DefaultException(ErrorCode errorcode) {
         this.errorCode = errorcode;
         this.className = this.getClass().getName();
     }

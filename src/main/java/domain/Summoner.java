@@ -7,7 +7,7 @@ public class Summoner {
     protected String puuid;
     protected Long profile_icon_id;
     protected Long level;
-    protected Long score;
+    protected Integer score;
 
     public Long getId() {
         return id;
@@ -57,11 +57,11 @@ public class Summoner {
         this.level = level;
     }
 
-    public Long getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 }

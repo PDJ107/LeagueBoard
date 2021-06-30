@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repository.UserMapper">
+
+    <select id="getUserById" parameterType="Long" resultType="domain.User">
+        SELECT
+               id,
+               account,
+               password,
+               summoner_name,
+               report_num
+        FROM league_board_db.user
+        WHERE id = #{id};
+    </select>
+
+    <select id="getUserByAccount" parameterType="String" resultType="domain.User">
+        SELECT
+            id,
+            account,
+            password,
+            summoner_name,
+            report_num
+        FROM league_board_db.user
+        WHERE account = #{account};
+    </select>
+
+
+    <resultMap id="userInfoMap" type="domain.UserInfo">
+        <result property="id" column="id" />
+        <result property="account" column="account" />
+        <result property="summoner_name" column="summoner_name" />
+
+        <association property="summonerInfo" javaType="domain.Summoner">
+            <id property="id" column="sid" />
+            <result property="encrypted_name" column="encrypted_name" />
+            <result property="puuid" column="puuid" />
+            <result property="profile_icon_id" column="profile_icon_id" />
+            <result property="level" column="level" />
+            <result property="score" column="score" />
+        </association>
+
+        <collection property="leagueInfo" ofType="domain.League">
+            <id property="id" column="lid" />
+            <result property="tier" column="tier" />
+            <result property="rank" column="rank" />
+            <result property="point" column="point" />
+            <result property="wins" column="wins" />
+            <result property="losses" column="losses" />
+            <result property="queue_type" column="queue_type" />
+        </collection>
+    </resultMap>
+
+    <select id="getUserInfo" parameterType="Long" resultMap="userInfoMap">
+        SELECT u.id, u.account, u.summoner_name,
+               s.id as sid, s.encrypted_name, s.puuid, s.profile_icon_id, s.level, s.score,
+               l.id as lid, l.tier, l.rank, l.point, l.wins, l.losses, l.queue_type
+        FROM league_board_db.user as u
+                 LEFT OUTER JOIN league_board_db.summoner as s
+                      ON s.user_id = u.id
+                 LEFT OUTER JOIN league_board_db.league as l
+                      ON l.user_id = u.id
+        WHERE u.id = #{id};
+    </select>
+
+    <select id="getUserList" resultMap="userInfoMap">
+        SELECT u.id, u.account, u.summoner_name,
+               s.id as sid, s.encrypted_name, s.puuid, s.profile_icon_id, s.level, s.score,
+               l.id as lid, l.tier, l.rank, l.point, l.wins, l.losses, l.queue_type
+        FROM league_board_db.user as u
+                 LEFT OUTER JOIN league_board_db.summoner as s
+                                 ON s.user_id = u.id
+                 LEFT OUTER JOIN league_board_db.league as l
+                                 ON l.user_id = u.id;
+    </select>
+
+
+    <select id="checkUserById" parameterType="Long" resultType="Boolean">
+        SELECT EXISTS ( SELECT * FROM league_board_db.user WHERE id = #{id});
+    </select>
+
+    <select id="checkUserByAccount" parameterType="String" resultType="Boolean">
+        SELECT EXISTS ( SELECT * FROM league_board_db.user WHERE account = #{account});
+    </select>
+    <select id="checkSummonerInfo" parameterType="Long" resultType="Boolean">
+        SELECT EXISTS ( SELECT * FROM league_board_db.summoner WHERE user_id = #{user_id});
+    </select>
+
+
+    <insert id="addUser" parameterType="domain.User">
+        INSERT INTO league_board_db.user(account, password, summoner_name) VALUE(#{account}, #{password}, #{summoner_name});
+    </insert>
+    <insert id="addSummonerInfo" parameterType="domain.Summoner">
+        INSERT INTO league_board_db.summoner(user_id, encrypted_name, puuid, profile_icon_id, level, score)
+        VALUE(#{user_id}, #{encrypted_name}, #{puuid}, #{profile_icon_id}, #{level}, #{score});
+    </insert>
+    <insert id="addLeagueInfo" parameterType="domain.League">
+        INSERT INTO league_board_db.league(user_id, tier, `rank`, `point`, wins, losses, queue_type)
+        VALUE(#{user_id}, #{tier}, #{rank}, #{point}, #{wins}, #{losses}, #{queue_type});
+    </insert>
+
+    <delete id="deleteUser" parameterType="Long">
+        DELETE FROM league_board_db.league WHERE user_id = #{id};
+        DELETE FROM league_board_db.summoner WHERE user_id = #{id};
+        DELETE FROM league_board_db.report WHERE victim_id = #{id} OR perpetrator_id = #{id};
+        DELETE FROM league_board_db.comment WHERE writer_id = #{id};
+        DELETE FROM league_board_db.board WHERE admin_id = #{id};
+        DELETE FROM league_board_db.user WHERE id = #{id};
+    </delete>
+    <delete id="deleteLeagueInfo" parameterType="Long">
+        DELETE FROM league_board_db.league
+        WHERE user_id = #{user_id}
+    </delete>
+
+    <update id="updateUser" parameterType="domain.User">
+        UPDATE league_board_db.user SET account = #{account}
+        WHERE #{account} IS NOT NULL AND id = #{id};
+        UPDATE league_board_db.user SET password = #{password}
+        WHERE #{password} IS NOT NULL AND id = #{id};
+        UPDATE league_board_db.user SET summoner_name = #{summoner_name}
+        WHERE #{summoner_name} IS NOT NULL AND id = #{id};
+    </update>
+
+    <update id="updateSummonerInfo" parameterType="domain.Summoner">
+        UPDATE league_board_db.summoner
+        SET encrypted_name = #{encrypted_name},
+            puuid = #{puuid},
+            profile_icon_id = #{profile_icon_id},
+            level = #{level},
+            score = #{score}
+        WHERE user_id = #{user_id};
+    </update>
+
+    <insert id="addReport" parameterType="domain.Report">
+        INSERT INTO league_board_db.report(victim_id, perpetrator_id, code)
+            VALUE(#{victim_id}, #{perpetrator_id}, #{code});
+
+        UPDATE league_board_db.user
+        SET report_num = report_num + 1
+        WHERE id = #{perpetrator_id};
+    </insert>
+
+</mapper>
+
+<!--
+Long getUserId(User user); //
+User getUserById(Long id); //
+User getUserByAccount(String account); //
+UserInfo getUserInfo(Long id); //
+
+boolean checkUserByid(Long id);//
+boolean checkUserByAccount(String account);//
+
+void addUser(User user); //
+void addLeagueInfo(League league);
+
+void deleteUser(Long id);
+void deleteLeagueInfo(Long user_id);
+
+void updateUser(User user);
+void updateSummonerInfo(Summoner summoner);
+-->

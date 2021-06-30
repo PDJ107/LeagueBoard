@@ -1,5 +1,6 @@
 package serviceImpl;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import domain.League;
 import domain.Summoner;
 import org.apache.http.HttpResponse;
@@ -11,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import service.RiotApiService;
 
@@ -18,9 +20,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+//@PropertySource("classpath:config/config.properties")
 public class RiotApiServiceImpl implements RiotApiService {
     @Value("${riot.development.api.key}")
-    private static String api_key;
+    private String api_key;
+
+    public Boolean checkSummoner(String summoner_name) throws Exception {
+        summoner_name = summoner_name.replace(" ", "%20");
+        String url = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner_name;
+
+        HttpGet getRequest = new HttpGet(url); //GET 메소드 URL 생성
+
+        getRequest.addHeader("X-Riot-Token", api_key);
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpResponse response = client.execute(getRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200)
+            return true;
+        else return false;
+    }
 
     public Summoner getSummonerInfo(String summoner_name) throws Exception{
         // 한글 닉네임은 띄어쓰기까지 정확히 입력해야함

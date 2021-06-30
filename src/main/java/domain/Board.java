@@ -2,10 +2,28 @@ package domain;
 
 public class Board {
     protected Long id;
-    protected Long user_id;
+    protected Long admin_id;
     protected String title;
     protected String contents;
     protected String post_time; // 나중에 타입 체크
+    protected Integer member_num;
+    protected Integer mean_score;
+
+    public Integer getMean_score() {
+        return mean_score;
+    }
+
+    public void setMean_score(Integer mean_score) {
+        this.mean_score = mean_score;
+    }
+
+    public Integer getMember_num() {
+        return member_num;
+    }
+
+    public void setMember_num(Integer member_num) {
+        this.member_num = member_num;
+    }
 
     public Long getId() {
         return id;
@@ -15,12 +33,12 @@ public class Board {
         this.id = id;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getAdmin_id() {
+        return admin_id;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setAdmin_id(Long admin_id) {
+        this.admin_id = admin_id;
     }
 
     public String getTitle() {

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repository.BoardMapper">
+
+    <select id="checkBoardByUserId" parameterType="Long" resultType="Boolean">
+        SELECT EXISTS ( SELECT * FROM league_board_db.board WHERE admin_id = #{user_id});
+    </select>
+
+    <select id="checkBoardById" parameterType="Long" resultType="Boolean">
+        SELECT EXISTS (SELECT * FROM league_board_db.board WHERE id = #{board_id});
+    </select>
+
+    <insert id="addBoard" parameterType="domain.Board">
+        INSERT INTO league_board_db.board(admin_id, title, contents, mean_score)
+            VALUE(#{admin_id}, #{title}, #{contents}, #{mean_score});
+    </insert>
+
+    <update id="updateBoard" parameterType="domain.Board">
+        UPDATE league_board_db.board SET title = #{title}
+        WHERE #{title} IS NOT NULL AND admin_id = #{admin_id};
+        UPDATE league_board_db.board SET contents = #{contents}
+        WHERE #{contents} IS NOT NULL AND admin_id = #{admin_id};
+    </update>
+
+    <delete id="deleteBoardByUserId" parameterType="Long">
+        DELETE FROM league_board_db.board WHERE admin_id = #{user_id};
+    </delete>
+
+    <select id="getBoardList" resultType="domain.Board">
+        SELECT * FROM league_board_db.board
+        ORDER BY post_time DESC;
+    </select>
+
+    <select id="getBoardListByScore" parameterType="Integer" resultType="domain.Board">
+        SELECT * FROM league_board_db.board
+        ORDER BY ABS(mean_score-#{score}) ASC;
+    </select>
+
+    <resultMap id="boardInfoMap" type="domain.BoardInfo">
+        <association property="board" javaType="domain.Board">
+            <id property="id" column="id" />
+            <result property="admin_id" column="admin_id" />
+            <result property="title" column="title" />
+            <result property="contents" column="contents" />
+            <result property="post_time" column="post_time" />
+            <result property="member_num" column="member_num" />
+            <result property="mean_score" column="mean_score" />
+        </association>
+
+        <collection property="commentList" ofType="domain.Comment">
+            <id property="id" column="cid" />
+            <result property="writer_id" column="writer_id" />
+            <result property="contents" column="c_contents" />
+            <result property="post_time" column="c_post_time" />
+        </collection>
+    </resultMap>
+    <!--BoardInfo getBoard(Long board_id);-->
+    <select id="getBoard" parameterType="Long" resultMap="boardInfoMap">
+        SELECT b.id, b.admin_id, b.title, b.contents, b.post_time, b.member_num, b.mean_score,
+               c.id as cid, c.writer_id, c.contents as c_contents, c.post_time as c_post_time
+        FROM league_board_db.board as b
+                 LEFT OUTER JOIN league_board_db.comment as c
+                                 ON c.board_id = b.id AND is_deleted = 0
+        WHERE b.id = #{board_id};
+    </select>
+
+    <select id="getBoardByUserId" parameterType="Long" resultType="domain.Board">
+        SELECT * FROM league_board_db.board
+        WHERE admin_id = #{user_id};
+    </select>
+
+    <select id="checkCommentById" parameterType="Long" resultType="boolean">
+        SELECT EXISTS (SELECT * FROM league_board_db.comment WHERE id = #{comment_id});
+    </select>
+
+    <insert id="addComment" parameterType="domain.Comment">
+        INSERT INTO league_board_db.comment(writer_id, board_id, contents)
+            VALUE(#{writer_id}, #{board_id}, #{contents});
+    </insert>
+
+    <update id="updateComment" parameterType="domain.Comment">
+        UPDATE league_board_db.comment SET contents = #{contents}
+        WHERE id = #{id};
+    </update>
+
+    <update id="deleteComment" parameterType="Long">
+        UPDATE league_board_db.comment SET is_deleted = 1 WHERE id = #{comment_id};
+    </update>
+
+    <select id="getCommentById" parameterType="Long" resultType="domain.Comment">
+        SELECT * FROM league_board_db.comment WHERE id = #{comment_id};
+    </select>
+
+    <select id="getCommentList" parameterType="Long" resultType="domain.Comment">
+        SELECT * FROM league_board_db.comment WHERE board_id = #{board_id} AND is_deleted = 0
+        ORDER BY post_time DESC;
+    </select>
+
+
+
+
+
+    <select id="checkMemberByUserId" parameterType="Long" resultType="boolean">
+        SELECT EXISTS (SELECT * FROM league_board_db.member WHERE user_id = #{id});
+    </select>
+
+    <insert id="addMember" parameterType="domain.Member">
+        UPDATE league_board_db.board SET member_num = member_num + 1
+        WHERE id = #{board_id};
+        INSERT INTO league_board_db.member(board_id, user_id)
+            VALUE(#{board_id}, #{user_id});
+    </insert>
+
+    <delete id="deleteMember" parameterType="domain.Member">
+        UPDATE league_board_db.board SET member_num = member_num - 1
+        WHERE id = #{board_id};
+        DELETE FROM league_board_db.member WHERE user_id = #{user_id};
+    </delete>
+
+    <select id="getMemberList" parameterType="Long" resultType="domain.Member">
+        SELECT user_id FROM league_board_db.member WHERE board_id = #{board_id};
+    </select>
+
+    <select id="getMemberByUserId" parameterType="Long" resultType="domain.Member">
+        SELECT * FROM league_board_db.member WHERE user_id = #{user_id};
+    </select>
+
+    <select id="getMemberNumById" parameterType="Long" resultType="Integer">
+        SELECT member_num FROM league_board_db.board WHERE id = #{board_id};
+    </select>
+
+</mapper>

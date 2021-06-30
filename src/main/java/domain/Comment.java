@@ -4,7 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class Comment {
     protected Long id;
-    protected Long user_id;
+    protected Long writer_id;
     protected Long board_id;
     protected String contents;
     protected String post_time; // 나중에 타입 체크
@@ -18,12 +18,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getWriter_id() {
+        return writer_id;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setWriter_id(Long writer_id) {
+        this.writer_id = writer_id;
     }
 
     public Long getBoard_id() {
