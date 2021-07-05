@@ -34,6 +34,9 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
+    <!-- @VALUE 어노테이션 문제 해결 -->
+    <context:property-placeholder location="classpath*:config/config.properties" />
+
 </beans>
 
         <!-- 리퀘스트마다 로드 -->

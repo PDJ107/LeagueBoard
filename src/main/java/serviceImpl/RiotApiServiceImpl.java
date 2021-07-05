@@ -1,6 +1,5 @@
 package serviceImpl;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import domain.League;
 import domain.Summoner;
 import org.apache.http.HttpResponse;
@@ -12,7 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import service.RiotApiService;
 
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-//@PropertySource("classpath:config/config.properties")
 public class RiotApiServiceImpl implements RiotApiService {
     @Value("${riot.development.api.key}")
     private String api_key;
@@ -48,10 +45,6 @@ public class RiotApiServiceImpl implements RiotApiService {
 
         HttpGet getRequest = new HttpGet(url); //GET 메소드 URL 생성
 
-        //getRequest.addHeader("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        //getRequest.addHeader("Accept-Charset", "application/x-www-form-urlencoded; charset=UTF-8");
-        //getRequest.addHeader("Origin", "https://developer.riotgames.com");
-
         getRequest.addHeader("X-Riot-Token", api_key);
 
         HttpClient client = HttpClientBuilder.create().build();
@@ -74,8 +67,6 @@ public class RiotApiServiceImpl implements RiotApiService {
             summoner.setProfile_icon_id((Long)jsonObject.get("profileIconId"));
             summoner.setLevel((Long)jsonObject.get("summonerLevel"));
 
-            //ObjectMapper mapper = new ObjectMapper();
-            //Summoner summoner = mapper.readValue(json, Summoner.class);
             return summoner;
         }
         // exception 처리

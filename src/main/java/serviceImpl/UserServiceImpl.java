@@ -71,6 +71,9 @@ public class UserServiceImpl implements UserService {
 
     // User 추가 : 토큰 반환
     public String addUser(User user) throws Exception {
+        // account null 예외처리
+        // password null 예외처리
+
         if(userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.Invalid_Request); // account 중복
 

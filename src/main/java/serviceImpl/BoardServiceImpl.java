@@ -7,6 +7,7 @@ import exception.DefaultException;
 import exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import repository.BoardMapper;
@@ -195,6 +196,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 참가
+    @Transactional //
     public void enterParty(Long board_id) throws Exception { // Auth
         if(board_id == null || !boardMapper.checkBoardById(board_id))
             throw new DefaultException(ErrorCode.Invalid_Request); // 잘못된 id
