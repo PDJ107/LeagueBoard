@@ -6,7 +6,6 @@ public class Board {
     protected String title;
     protected String contents;
     protected String post_time; // 나중에 타입 체크
-    protected Integer member_num;
     protected Integer mean_score;
 
     public Integer getMean_score() {
@@ -15,14 +14,6 @@ public class Board {
 
     public void setMean_score(Integer mean_score) {
         this.mean_score = mean_score;
-    }
-
-    public Integer getMember_num() {
-        return member_num;
-    }
-
-    public void setMember_num(Integer member_num) {
-        this.member_num = member_num;
     }
 
     public Long getId() {

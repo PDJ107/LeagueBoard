@@ -45,6 +45,7 @@ public class BoardServiceImpl implements BoardService {
             System.out.println(user_id);
 
             board.setAdmin_id(user_id);
+
             // mean_score 추가
             board.setMean_score(userInfo.getSummonerInfo().getScore());
 

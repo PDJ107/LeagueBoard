@@ -1,5 +1,8 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"board_id"})
 public class Member {
     protected Long board_id;
     protected Long user_id;

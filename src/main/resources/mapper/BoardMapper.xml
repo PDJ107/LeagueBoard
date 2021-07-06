@@ -46,7 +46,6 @@
             <result property="title" column="title" />
             <result property="contents" column="contents" />
             <result property="post_time" column="post_time" />
-            <result property="member_num" column="member_num" />
             <result property="mean_score" column="mean_score" />
         </association>
 
@@ -59,7 +58,7 @@
     </resultMap>
     <!--BoardInfo getBoard(Long board_id);-->
     <select id="getBoard" parameterType="Long" resultMap="boardInfoMap">
-        SELECT b.id, b.admin_id, b.title, b.contents, b.post_time, b.member_num, b.mean_score,
+        SELECT b.id, b.admin_id, b.title, b.contents, b.post_time, b.mean_score,
                c.id as cid, c.writer_id, c.contents as c_contents, c.post_time as c_post_time
         FROM league_board_db.board as b
                  LEFT OUTER JOIN league_board_db.comment as c
@@ -108,15 +107,11 @@
     </select>
 
     <insert id="addMember" parameterType="domain.Member">
-        UPDATE league_board_db.board SET member_num = member_num + 1
-        WHERE id = #{board_id};
         INSERT INTO league_board_db.member(board_id, user_id)
             VALUE(#{board_id}, #{user_id});
     </insert>
 
     <delete id="deleteMember" parameterType="domain.Member">
-        UPDATE league_board_db.board SET member_num = member_num - 1
-        WHERE id = #{board_id};
         DELETE FROM league_board_db.member WHERE user_id = #{user_id};
     </delete>
 
@@ -129,7 +124,7 @@
     </select>
 
     <select id="getMemberNumById" parameterType="Long" resultType="Integer">
-        SELECT member_num FROM league_board_db.board WHERE id = #{board_id};
+        SELECT COUNT(*) FROM league_board_db.member WHERE board_id = #{board_id};
     </select>
 
 </mapper>

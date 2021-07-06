@@ -11,10 +11,10 @@ public enum ErrorCode {
     Summoner_Not_Found("RIOT_API_01", "존재하지 않는 소환사 이름입니다.", HttpStatus.NOT_FOUND),
     RiotApi_Request_Failed("RIOT_API_02", "Riot API 요청에 실패했습니다.", HttpStatus.BAD_REQUEST),
 
-    Token_Is_Null("TOKEN_01", "토큰이 Null 입니다.", HttpStatus.BAD_REQUEST),
-    Expired_Token("TOKEN_02", "토큰이 만료됐습니다.", HttpStatus.BAD_REQUEST),
-    Invalid_Token("TOKEN_03", "토큰이 잘못됐습니다.", HttpStatus.BAD_REQUEST),
-    Invalid_Token_Bearer("TOKEN_04", "토큰이 Bearer로 시작하지 않습니다.", HttpStatus.BAD_REQUEST),
+    Token_Is_Null("TOKEN_01", "토큰이 Null 입니다.", HttpStatus.UNAUTHORIZED),
+    Expired_Token("TOKEN_02", "토큰이 만료됐습니다.", HttpStatus.UNAUTHORIZED),
+    Invalid_Token("TOKEN_03", "토큰이 잘못됐습니다.", HttpStatus.UNAUTHORIZED),
+    Invalid_Token_Bearer("TOKEN_04", "토큰이 Bearer로 시작하지 않습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token_User_Id("TOKEN_05", "토큰의 User Id에 해당하는 유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     Party_Already_Exists("BOARD_01", "파티가 이미 존재합니다.", HttpStatus.BAD_REQUEST),

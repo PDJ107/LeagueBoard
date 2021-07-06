@@ -1,7 +1,8 @@
 package domain;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"board_id", "is_deleted"})
 public class Comment {
     protected Long id;
     protected Long writer_id;
