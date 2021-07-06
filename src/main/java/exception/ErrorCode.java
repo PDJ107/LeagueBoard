@@ -16,6 +16,7 @@ public enum ErrorCode {
     Invalid_Token("TOKEN_03", "토큰이 잘못됐습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token_Bearer("TOKEN_04", "토큰이 Bearer로 시작하지 않습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token_User_Id("TOKEN_05", "토큰의 User Id에 해당하는 유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    Logged_Out_Token("TOKEN_06", "로그아웃된 토큰입니다.", HttpStatus.UNAUTHORIZED),
 
     Party_Already_Exists("BOARD_01", "파티가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     Party_Not_Exists("BOARD_02", "참가중인 파티가 없습니다.", HttpStatus.BAD_REQUEST),

@@ -159,11 +159,11 @@ public class UserServiceImpl implements UserService {
 
         if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else {
-            boardService.exitPartyByUserId(user_id);
-
+            boardService.deleteAllUserAtParty();
             userMapper.deleteUser(user_id);
 
             // 토큰 로그아웃 처리
+            jwtUtil.logoutToken(request.getHeader("Authorization"));
         }
     }
 
@@ -185,8 +185,7 @@ public class UserServiceImpl implements UserService {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
-        Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-
+        jwtUtil.logoutToken(request.getHeader("Authorization"));
     }
 
     public void reportUser(Report report) throws Exception {

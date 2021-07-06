@@ -10,10 +10,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
@@ -21,6 +18,8 @@ public class JwtUtil {
 
     @Value("${json.web.token.secret.key}")
     String secret;
+
+    private static Set<String> activeTokenList = new HashSet<>();
 
     public Long getIdFromToken(String token) throws Exception{
         if ( token == null) {
@@ -46,6 +45,7 @@ public class JwtUtil {
 
         }catch (ExpiredJwtException e1){
             //throw new Exception("만료됨");
+            if(activeTokenList.contains(token)) activeTokenList.remove(token);
             throw new AuthException(ErrorCode.Expired_Token);
         }
         catch(Throwable e2){
@@ -67,7 +67,15 @@ public class JwtUtil {
         calendar.add(Calendar.HOUR_OF_DAY, 24); // access token expire 24h later
         Date exp = calendar.getTime();
 
-        return Jwts.builder().setHeader(headers).setClaims(payloads).setExpiration(exp).signWith(SignatureAlgorithm.HS256, secret.getBytes()).compact();
+        String token = Jwts.builder().
+                setHeader(headers).
+                setClaims(payloads).
+                setExpiration(exp).
+                signWith(SignatureAlgorithm.HS256, secret.getBytes()).compact();
+
+        activeTokenList.add(token);
+
+        return token;
     }
 
     public boolean isValid(String token) throws Exception{
@@ -77,18 +85,27 @@ public class JwtUtil {
         else if ( !token.startsWith("Bearer ") ){
             throw new AuthException(ErrorCode.Invalid_Token_Bearer);
         }
+
         token = token.substring(7); // "Bearer " 제거
         try {
             Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
         }catch (ExpiredJwtException e1){
+            if(activeTokenList.contains(token)) activeTokenList.remove(token);
             throw new AuthException(ErrorCode.Expired_Token);
         }
         catch(Throwable e2){
             throw new AuthException(ErrorCode.Invalid_Token);
         }
+
+        if(!activeTokenList.contains(token)) {// 로그아웃 체크
+            throw new AuthException(ErrorCode.Logged_Out_Token);
+        }
         return true;
     }
 
-
+    public void logoutToken(String token) throws Exception {
+        token = token.substring(7);
+        if(activeTokenList.contains(token)) activeTokenList.remove(token);
+    }
 }
 

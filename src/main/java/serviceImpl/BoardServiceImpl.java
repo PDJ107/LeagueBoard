@@ -194,6 +194,18 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    // 모든 유저 강퇴
+    public void deleteAllUserAtParty() throws Exception { // Auth
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                        .getRequest();
+        Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+
+        if(!boardMapper.checkBoardByUserId(user_id)) return; // 보드가 없음
+        Long board_id = boardMapper.getBoardByUserId(user_id).getId();
+        boardMapper.deleteAllMember(board_id);
+    }
+
     // 파티 참가
     @Transactional //
     public void enterParty(Long board_id) throws Exception { // Auth
@@ -236,15 +248,6 @@ public class BoardServiceImpl implements BoardService {
         }
         else
             throw new BoardException(ErrorCode.Party_Not_Exists); // 파티에 참가중이 아님
-    }
-
-    public void exitPartyByUserId(Long user_id) {
-        if(boardMapper.checkMemberByUserId(user_id)) {// 멤버로 참가중일 경우
-            Member member = new Member();
-            member.setUser_id(user_id);
-            member.setBoard_id(boardMapper.getMemberByUserId(user_id).getBoard_id());
-            boardMapper.deleteMember(member);
-        }
     }
 
     // 파티 조회

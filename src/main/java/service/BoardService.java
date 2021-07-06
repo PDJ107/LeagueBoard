@@ -30,11 +30,11 @@ public interface BoardService {
 
     // 파티 강퇴
     void deleteUserAtParty(Long target_user_id) throws Exception; // Auth
+    void deleteAllUserAtParty() throws Exception;
     // 파티 참가
     void enterParty(Long board_id) throws Exception; // Auth
     // 파티 나감
     void exitParty() throws Exception; // Auth
-    void exitPartyByUserId(Long id);
     // 파티 조회
     List<Member> getPartyMember(Long board_id) throws Exception;
 }

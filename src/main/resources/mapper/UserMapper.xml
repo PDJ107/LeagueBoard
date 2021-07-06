@@ -106,6 +106,7 @@
         DELETE FROM league_board_db.summoner WHERE user_id = #{id};
         DELETE FROM league_board_db.report WHERE victim_id = #{id} OR perpetrator_id = #{id};
         DELETE FROM league_board_db.comment WHERE writer_id = #{id};
+        DELETE FROM league_board_db.member WHERE user_id = #{id};
         DELETE FROM league_board_db.board WHERE admin_id = #{id};
         DELETE FROM league_board_db.user WHERE id = #{id};
     </delete>

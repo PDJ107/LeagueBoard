@@ -33,6 +33,7 @@ public interface BoardMapper {
     boolean checkMemberByUserId(Long user_id);
     void addMember(Member member);
     void deleteMember(Member member);
+    void deleteAllMember(Long board_id);
     List<Member> getMemberList(Long board_id);
     Member getMemberByUserId(Long user_id);
     Integer getMemberNumById(Long board_id);

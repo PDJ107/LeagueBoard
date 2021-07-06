@@ -115,6 +115,10 @@
         DELETE FROM league_board_db.member WHERE user_id = #{user_id};
     </delete>
 
+    <delete id="deleteAllMember" parameterType="Long">
+        DELETE FROM league_board_db.member WHERE board_id = #{board_id};
+    </delete>
+
     <select id="getMemberList" parameterType="Long" resultType="domain.Member">
         SELECT user_id FROM league_board_db.member WHERE board_id = #{board_id};
     </select>
