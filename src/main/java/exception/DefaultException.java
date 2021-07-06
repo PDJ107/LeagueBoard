@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public class DefaultException extends RuntimeException{
     private String code;
     private HttpStatus status;
-    private String className;
+    private String detail;
     private String exceptionName;
 
     public DefaultException(ErrorCode errorCode) {
@@ -17,12 +17,19 @@ public class DefaultException extends RuntimeException{
         this.exceptionName = this.getClass().getName();
     }
 
-    public String getClassName() {
-        return className;
+    public DefaultException(ErrorCode errorCode, HttpStatus httpStatus) {
+        super(errorCode.getMessage());
+        this.code = errorCode.getCode();
+        this.status = httpStatus;
+        this.exceptionName = this.getClass().getName();
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getExceptionName() {

@@ -29,7 +29,7 @@ public class JwtUtil {
         }
         else if ( !token.startsWith("Bearer ") ){
             //throw new Exception("Bearer 로 시작안함");
-            throw new AuthException(ErrorCode.Invalid_Bearer);
+            throw new AuthException(ErrorCode.Invalid_Token_Bearer);
         }
         token = token.substring(7); // "Bearer " 제거
 
@@ -75,7 +75,7 @@ public class JwtUtil {
             throw new AuthException(ErrorCode.Token_Is_Null);
         }
         else if ( !token.startsWith("Bearer ") ){
-            throw new AuthException(ErrorCode.Invalid_Bearer);
+            throw new AuthException(ErrorCode.Invalid_Token_Bearer);
         }
         token = token.substring(7); // "Bearer " 제거
         try {

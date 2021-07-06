@@ -2,14 +2,12 @@ package serviceImpl;
 
 import domain.*;
 import exception.ErrorCode;
-import exception.DefaultException;
 import exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import repository.BoardMapper;
 import repository.UserMapper;
 import service.BoardService;
 import service.RiotApiService;
@@ -48,9 +46,8 @@ public class UserServiceImpl implements UserService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-        System.out.println(request.getHeader("Authorization"));
-        System.out.println(user_id);
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Request);
+
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else return userMapper.getUserById(user_id);
     }
 
@@ -59,12 +56,12 @@ public class UserServiceImpl implements UserService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Request);
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else return userMapper.getUserInfo(user_id);
     }
 
     public UserInfo getUserInfoById(Long id) throws Exception {
-        if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.Invalid_Request);
+        if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
         else return userMapper.getUserInfo(id);
     }
 
@@ -75,11 +72,11 @@ public class UserServiceImpl implements UserService {
         // password null 예외처리
 
         if(userMapper.checkUserByAccount(user.getAccount()))
-            throw new UserException(ErrorCode.Invalid_Request); // account 중복
+            throw new UserException(ErrorCode.Account_Already_Exists); // account 중복
 
         // summoner_name 체크
         if(!riotApiService.checkSummoner(user.getSummoner_name()))
-            throw new UserException(ErrorCode.Invalid_Request); // 잘못된 summoner_name
+            throw new UserException(ErrorCode.Summoner_Not_Found); // 잘못된 summoner_name
 
         // password 암호화
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -92,7 +89,6 @@ public class UserServiceImpl implements UserService {
         updateUserInfo(user_id);
 
         return jwtUtil.genJsonWebToken(user_id);
-
     }
 
     // User 정보 업데이트 by token
@@ -115,13 +111,13 @@ public class UserServiceImpl implements UserService {
         if(user.getSummoner_name() != null) {
             // summoner_name 체크
             if(!riotApiService.checkSummoner(user.getSummoner_name()))
-                throw new UserException(ErrorCode.Invalid_Request); // 잘못된 summoner_name
+                throw new UserException(ErrorCode.Summoner_Not_Found); // 잘못된 summoner_name
             updateUserInfo(user_id);
         }
 
         user.setId(user_id);
 
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Request); // 잘못된 token id
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id); // 잘못된 token id
         else userMapper.updateUser(user);
 
 
@@ -129,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
     // riot api 사용, summoner & League 업데이트
     public void updateUserInfo(Long id) throws Exception {
-        if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.Invalid_Request);
+        if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
 
         User user = userMapper.getUserById(id);
 
@@ -161,7 +157,7 @@ public class UserServiceImpl implements UserService {
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
 
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Request);
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else {
             boardService.exitPartyByUserId(user_id);
 
@@ -174,13 +170,13 @@ public class UserServiceImpl implements UserService {
     // 로그인 : 토큰 반환
     public String loginUser(User user) throws Exception {
         if(!userMapper.checkUserByAccount(user.getAccount()))
-            throw new UserException(ErrorCode.User_Not_Found);
+            throw new UserException(ErrorCode.User_Invalid_Request);
         User userdata = userMapper.getUserByAccount(user.getAccount());
 
         // password 비교
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if(!encoder.matches(user.getPassword(), userdata.getPassword()))
-            throw new UserException(ErrorCode.User_Not_Found); // 잘못된 패스워드
+            throw new UserException(ErrorCode.User_Invalid_Request); // 잘못된 패스워드
 
         return jwtUtil.genJsonWebToken(userdata.getId());
     }
@@ -199,12 +195,12 @@ public class UserServiceImpl implements UserService {
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
 
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Request);
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else {
             if(!userMapper.checkUserById(report.getPerpetrator_id()))
                 throw new UserException(ErrorCode.User_Not_Found);
             else if(user_id == report.getPerpetrator_id())
-                throw new UserException(ErrorCode.Invalid_Request); // 자신을 신고할 수 없음
+                throw new UserException(ErrorCode.Report_Invalid_Request); // 자신을 신고할 수 없음
             report.setVictim_id(user_id);
             userMapper.addReport(report);
         }

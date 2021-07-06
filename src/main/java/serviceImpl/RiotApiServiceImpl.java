@@ -2,6 +2,8 @@ package serviceImpl;
 
 import domain.League;
 import domain.Summoner;
+import exception.ErrorCode;
+import exception.RiotApiException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -11,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import service.RiotApiService;
 
@@ -72,9 +75,8 @@ public class RiotApiServiceImpl implements RiotApiService {
         // exception 처리
         else {
             System.out.println("response is error : " + response.getStatusLine().getStatusCode());
+            throw new RiotApiException(ErrorCode.RiotApi_Request_Failed, HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
         }
-
-        return new Summoner();
     }
     public List<League> getLeagueInfo(String encrypted_summoner_name) throws Exception{
         List<League> league_list = new ArrayList<League>();
@@ -110,13 +112,13 @@ public class RiotApiServiceImpl implements RiotApiService {
 
                 league_list.add(league);
             }
+            return league_list;
         }
         // exception 처리
         else {
-            System.out.println("response is error : " + response.getStatusLine().getStatusCode());
+            throw new RiotApiException(ErrorCode.RiotApi_Request_Failed, HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
         }
 
-        return league_list;
     }
     public Boolean isPlaying(String encrypted_summoner_name) throws Exception {
         String url = "https://kr.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/"
@@ -133,7 +135,6 @@ public class RiotApiServiceImpl implements RiotApiService {
         if (response.getStatusLine().getStatusCode() == 200) {
             return true;
         }
-        // exception 처리
         else {
             return false;
         }
