@@ -28,7 +28,7 @@ public class UserController {
     // 내 정보 가져오기 (토큰 체크)
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/myinfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/me", method = RequestMethod.GET)
     @ApiOperation(value = "내 정보 조회", notes = "자신의 정보를 조회합니다.")
     public ResponseEntity getUser() throws Exception{
         return new ResponseEntity(userService.getUser(), HttpStatus.OK);
@@ -37,7 +37,7 @@ public class UserController {
     // 내 정보 가져오기 (토큰 체크) (소환사, 리그 정보)
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/myinfo2", method = RequestMethod.GET)
+    @RequestMapping(value = "/me2", method = RequestMethod.GET)
     @ApiOperation(value = "내 정보 조회2", notes = "자신의 정보를 조회합니다. 소한사 정보와 리그 정보도 포함됩니다.")
     public ResponseEntity getUserInfo() throws Exception{
         return new ResponseEntity(userService.getUserInfo(), HttpStatus.OK);
@@ -54,7 +54,7 @@ public class UserController {
     // 유저 정보 업데이트
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/myinfo", method = RequestMethod.PUT)
+    @RequestMapping(value = "/me", method = RequestMethod.PUT)
     @ApiOperation(value = "내 정보 수정", notes = "자신의 정보를 수정합니다. account, password, summoner_name 을 수정할 수 있습니다.")
     public ResponseEntity updateUser(@RequestBody User user) throws Exception{
         userService.updateUser(user);

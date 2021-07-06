@@ -1,5 +1,8 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"user_id"})
 public class Summoner {
     protected Long id;
     protected Long user_id;
