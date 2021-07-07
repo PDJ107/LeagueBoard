@@ -12,9 +12,9 @@ public interface BoardService {
     // 모집글(파티) 삭제
     void deleteBoard() throws Exception; // Auth
     // 글 목록 검색
-    List<Board> getBoardList() throws Exception;
-    List<Board> getBoardList2(Search search) throws Exception;  // Auth
+    List<Board> getBoardList(Search search) throws Exception;  // Auth
     BoardInfo getBoard(Long board_id) throws Exception;
+    BoardInfo getBoard() throws Exception; // Auth
 
     // 댓글 작성
     void addComment(String contents) throws Exception; // Auth

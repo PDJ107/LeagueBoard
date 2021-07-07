@@ -37,7 +37,7 @@ public class UserController {
     // 내 정보 가져오기 (토큰 체크) (소환사, 리그 정보)
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/me2", method = RequestMethod.GET)
+    @RequestMapping(value = "/me/summoner-league", method = RequestMethod.GET)
     @ApiOperation(value = "내 정보 조회2", notes = "자신의 정보를 조회합니다. 소한사 정보와 리그 정보도 포함됩니다.")
     public ResponseEntity getUserInfo() throws Exception{
         return new ResponseEntity(userService.getUserInfo(), HttpStatus.OK);

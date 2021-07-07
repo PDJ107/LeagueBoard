@@ -14,7 +14,6 @@ public interface BoardMapper {
     void addBoard(Board board);
     void updateBoard(Board board);
     void deleteBoardByUserId(Long user_id);
-    List<Board> getBoardList();
     List<Board> getBoardList2(Search search);
     BoardInfo getBoard(Long board_id);
     Board getBoardByUserId(Long user_id);

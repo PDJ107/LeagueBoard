@@ -29,11 +29,6 @@
         DELETE FROM league_board_db.board WHERE admin_id = #{user_id};
     </delete>
 
-    <select id="getBoardList" resultType="domain.Board">
-        SELECT * FROM league_board_db.board
-        ORDER BY post_time DESC;
-    </select>
-
     <select id="getBoardList2" parameterType="domain.Search" resultType="domain.Board">
         SELECT * FROM league_board_db.board as b
         <if test="empty">

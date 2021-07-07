@@ -85,11 +85,7 @@ public class BoardServiceImpl implements BoardService {
             boardMapper.deleteBoardByUserId(user_id);
         }
     }
-    // 글 목록 검색
-    public List<Board> getBoardList() throws Exception {
-        return boardMapper.getBoardList();
-    }
-    public List<Board> getBoardList2(Search search) throws Exception {  // Auth
+    public List<Board> getBoardList(Search search) throws Exception {  // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -109,7 +105,25 @@ public class BoardServiceImpl implements BoardService {
         return boardInfo;
     }
 
+    public BoardInfo getBoard() throws Exception {
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                        .getRequest();
+        Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        Long board_id;
+        if(boardMapper.checkBoardByUserId(user_id)) {
+            board_id = boardMapper.getBoardByUserId(user_id).getId();
+        }
+        else if(boardMapper.checkMemberByUserId(user_id)) {
+            board_id = boardMapper.getMemberByUserId(user_id).getBoard_id();
+        }
+        else
+            throw new BoardException(ErrorCode.Party_Not_Exists);
 
+        BoardInfo boardInfo = boardMapper.getBoard(board_id);
+        boardInfo.setMemberList(boardMapper.getMemberList(board_id));
+        return boardInfo;
+    }
 
     // 댓글 작성
     public void addComment(String contents) throws Exception { // Auth
@@ -259,4 +273,6 @@ public class BoardServiceImpl implements BoardService {
 
         return boardMapper.getMemberList(board_id);
     }
+
+
 }
