@@ -30,6 +30,9 @@ public class BoardServiceImpl implements BoardService {
 
     // 모집글(파티) 작성
     public void addBoard(Board board) throws Exception { // Auth
+        if(board.getTitle() == null) throw new BoardException(ErrorCode.Title_Is_Null);
+        if(board.getContents() == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -55,6 +58,7 @@ public class BoardServiceImpl implements BoardService {
     }
     // 모집글(파티) 수정 (title or contents)
     public void updateBoard(Board board) throws Exception { // Auth
+        //
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -67,6 +71,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public void updateBoardScore(Long board_id) throws Exception {
+        if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
 
         BoardInfo boardInfo = getBoard(board_id);
@@ -120,6 +125,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public BoardInfo getBoard(Long board_id) throws Exception {
+        if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 보드 id
         BoardInfo boardInfo = boardMapper.getBoard(board_id);
@@ -149,6 +155,7 @@ public class BoardServiceImpl implements BoardService {
 
     // 댓글 작성
     public void addComment(String contents) throws Exception { // Auth
+        if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -170,7 +177,9 @@ public class BoardServiceImpl implements BoardService {
     }
     // 댓글 수정
     public void updateComment(Long comment_id, String contents) throws Exception { // Auth
-        if(comment_id == null || !boardMapper.checkCommentById(comment_id))
+        if(comment_id == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
+        if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+        if(!boardMapper.checkCommentById(comment_id))
             throw new BoardException(ErrorCode.Comment_Not_Found); // 잘못된 comment id
 
         HttpServletRequest request =
@@ -189,7 +198,8 @@ public class BoardServiceImpl implements BoardService {
     }
     // 댓글 삭제
     public void deleteComment(Long comment_id) throws Exception { // Auth
-        if(comment_id == null || !boardMapper.checkCommentById(comment_id))
+        if(comment_id == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
+        if(!boardMapper.checkCommentById(comment_id))
             throw new BoardException(ErrorCode.Comment_Not_Found); // 잘못된 id
 
         HttpServletRequest request =
@@ -204,7 +214,8 @@ public class BoardServiceImpl implements BoardService {
     }
     // 댓글 조회
     public List<Comment> getComment(Long board_id) throws Exception {
-        if(board_id == null || !boardMapper.checkBoardById(board_id))
+        if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
+        if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 id
 
         List<Comment> commentList = boardMapper.getCommentList(board_id);
@@ -213,6 +224,7 @@ public class BoardServiceImpl implements BoardService {
 
     // 파티 강퇴
     public void deleteUserAtParty(Long target_user_id) throws Exception { // Auth
+        if(target_user_id == null) throw new BoardException(ErrorCode.User_Id_Is_Null);
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -248,7 +260,8 @@ public class BoardServiceImpl implements BoardService {
     // 파티 참가
     @Transactional //
     public void enterParty(Long board_id) throws Exception { // Auth
-        if(board_id == null || !boardMapper.checkBoardById(board_id))
+        if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
+        if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 id
         else if(boardMapper.getMemberNumById(board_id) >= 4)
             throw new BoardException(ErrorCode.Party_Is_Full); // 자리가 없음
@@ -293,7 +306,8 @@ public class BoardServiceImpl implements BoardService {
 
     // 파티 조회
     public List<Member> getPartyMember(Long board_id) throws Exception {
-        if(board_id == null || !boardMapper.checkBoardById(board_id))
+        if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
+        if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 id
 
         return boardMapper.getMemberList(board_id);

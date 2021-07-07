@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserInfo getUserInfoById(Long id) throws Exception {
+        if(id == null) throw new UserException(ErrorCode.User_Id_Is_Null);
         if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
         else return userMapper.getUserInfo(id);
     }
@@ -69,7 +70,13 @@ public class UserServiceImpl implements UserService {
     // User 추가 : 토큰 반환
     public String addUser(User user) throws Exception {
         // account null 예외처리
+        if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
         // password null 예외처리
+        if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
+        // 소환사이름 예외처리
+        if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
+
+        // 유저 정보 예외처리 (예: account 8 ~ 15자 제한 등)
 
         if(userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.Account_Already_Exists); // account 중복
@@ -93,6 +100,9 @@ public class UserServiceImpl implements UserService {
 
     // User 정보 업데이트 by token
     public void updateUser(User user) throws Exception {
+        // 유저 정보 예외처리 (예: account 8 ~ 15자 제한 등)
+
+
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -125,6 +135,7 @@ public class UserServiceImpl implements UserService {
 
     // riot api 사용, summoner & League 업데이트
     public void updateUserInfo(Long id) throws Exception {
+        if(id == null) throw new UserException(ErrorCode.User_Id_Is_Null);
         if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
 
         User user = userMapper.getUserById(id);
@@ -169,6 +180,11 @@ public class UserServiceImpl implements UserService {
 
     // 로그인 : 토큰 반환
     public String loginUser(User user) throws Exception {
+        // account null 예외처리
+        if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
+        // password null 예외처리
+        if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
+
         if(!userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.User_Invalid_Request);
         User userdata = userMapper.getUserByAccount(user.getAccount());
@@ -189,6 +205,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public void reportUser(Report report) throws Exception {
+        if(report.getPerpetrator_id() == null) throw new UserException(ErrorCode.User_Id_Is_Null);
+        if(report.getCode() == null) throw new UserException(ErrorCode.Report_Code_Is_Null);
+
+        // report code 예외처리 ()
+
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();

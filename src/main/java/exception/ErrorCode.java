@@ -7,9 +7,14 @@ public enum ErrorCode {
     User_Invalid_Request("USER_02", "account 또는 password가 틀렸습니다.", HttpStatus.BAD_REQUEST),
     Account_Already_Exists("USER_03", "이미 존재하는 Account 입니다.", HttpStatus.BAD_REQUEST),
     Report_Invalid_Request("USER_04", "자신은 신고할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    Report_Code_Is_Null("USER_05", "유저 신고 코드가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Account_Is_Null("USER_06", "account가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Password_Is_Null("USER_07", "password가 Null입니다.", HttpStatus.BAD_REQUEST),
+    User_Id_Is_Null("USER_08", "User id가 Null입니다.", HttpStatus.BAD_REQUEST),
 
     Summoner_Not_Found("RIOT_API_01", "존재하지 않는 소환사 이름입니다.", HttpStatus.NOT_FOUND),
     RiotApi_Request_Failed("RIOT_API_02", "Riot API 요청에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    Summoner_Name_Is_Null("RIOT_API_03", "소환사 이름이 Null입니다.", HttpStatus.BAD_REQUEST),
 
     Token_Is_Null("TOKEN_01", "토큰이 Null 입니다.", HttpStatus.UNAUTHORIZED),
     Expired_Token("TOKEN_02", "토큰이 만료됐습니다.", HttpStatus.UNAUTHORIZED),
@@ -25,7 +30,11 @@ public enum ErrorCode {
     Board_Not_Found("BOARD_05", "모집 글(파티)을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     Comment_Not_Found("BOARD_06", "댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     Comment_Invalid_Access("BOARD_07", "자신이 작성한 댓글이 아닙니다.", HttpStatus.BAD_REQUEST),
-    Member_Not_Found("BOARD_08", "해당 멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
+    Comment_Id_Is_Null("BOARD_08", "댓글 id가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Member_Not_Found("BOARD_09", "해당 멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    Board_Id_Is_Null("BOARD_10", "Board Id가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Title_Is_Null("BOARD_11", "제목이 Null입니다.", HttpStatus.BAD_REQUEST),
+    Contents_Is_Null("BOARD_12", "내용이 Null입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private String code;
