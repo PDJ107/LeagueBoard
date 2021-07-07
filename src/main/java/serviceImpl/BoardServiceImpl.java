@@ -14,6 +14,7 @@ import service.UserService;
 import util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -64,6 +65,27 @@ public class BoardServiceImpl implements BoardService {
             boardMapper.updateBoard(board);
         }
     }
+
+    public void updateBoardScore(Long board_id) throws Exception {
+        if(!boardMapper.checkBoardById(board_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
+
+        BoardInfo boardInfo = getBoard(board_id);
+        List<Long> idList = new ArrayList<>();
+        idList.add(boardInfo.getBoard().getAdmin_id());
+        for(int i = 0; i < boardInfo.getMemberList().size(); ++i) {
+            idList.add(boardInfo.getMemberList().get(i).getUser_id());
+        }
+
+        Integer sum = 0;
+        for(int i = 0; i < idList.size(); ++i) {
+            sum += userService.getUserInfoById(idList.get(i)).getSummonerInfo().getScore();
+        }
+        Board board = new Board();
+        board.setId(board_id);
+        board.setMean_score(sum / idList.size());
+        boardMapper.updateBoardScore(board);
+    }
+
     // 모집글(파티) 삭제
     public void deleteBoard() throws Exception { // Auth
         HttpServletRequest request =
@@ -203,10 +225,11 @@ public class BoardServiceImpl implements BoardService {
             throw new BoardException(ErrorCode.User_Not_Found); // 잘못된 타겟 유저 id
         else {
             Member targetMember = boardMapper.getMemberByUserId(target_user_id);
-
-            if(boardMapper.getBoardByUserId(user_id).getId() != targetMember.getBoard_id())
+            Long board_id = boardMapper.getBoardByUserId(user_id).getId();
+            if(board_id != targetMember.getBoard_id())
                 throw new BoardException(ErrorCode.Member_Not_Found); // 해당 파티에 속한 멤버가 아님
             boardMapper.deleteMember(targetMember);
+            updateBoardScore(board_id);
         }
     }
 
@@ -244,6 +267,7 @@ public class BoardServiceImpl implements BoardService {
         newMember.setBoard_id(board_id);
 
         boardMapper.addMember(newMember);
+        updateBoardScore(board_id);
     }
 
     // 파티 나감
@@ -258,6 +282,7 @@ public class BoardServiceImpl implements BoardService {
             member.setUser_id(user_id);
             member.setBoard_id(boardMapper.getMemberByUserId(user_id).getBoard_id());
             boardMapper.deleteMember(member);
+            updateBoardScore(member.getBoard_id());
         }
         else if(boardMapper.checkBoardByUserId(user_id)) {// admin일 경우
             throw new BoardException(ErrorCode.Party_Invalid_Request); // admin인 경우 delete board만 가능

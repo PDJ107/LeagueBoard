@@ -9,6 +9,8 @@ public interface BoardService {
     void addBoard(Board board) throws Exception; // Auth
     // 모집글(파티) 수정
     void updateBoard(Board board) throws Exception; // Auth
+
+    void updateBoardScore(Long board_id) throws Exception;
     // 모집글(파티) 삭제
     void deleteBoard() throws Exception; // Auth
     // 글 목록 검색

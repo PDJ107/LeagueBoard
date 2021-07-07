@@ -13,6 +13,7 @@ public interface BoardMapper {
     boolean checkBoardById(Long board_id);
     void addBoard(Board board);
     void updateBoard(Board board);
+    void updateBoardScore(Board board);
     void deleteBoardByUserId(Long user_id);
     List<Board> getBoardList2(Search search);
     BoardInfo getBoard(Long board_id);

@@ -25,6 +25,12 @@
         WHERE #{contents} IS NOT NULL AND admin_id = #{admin_id};
     </update>
 
+    <!-- void updateBoardScore(Integer avg); -->
+    <update id="updateBoardScore" parameterType="Integer">
+        UPDATE league_board_db.board SET mean_score = #{mean_score}
+        WHERE id = #{id};
+    </update>
+
     <delete id="deleteBoardByUserId" parameterType="Long">
         DELETE FROM league_board_db.board WHERE admin_id = #{user_id};
     </delete>
