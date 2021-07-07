@@ -19,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "모든 유저 정보 조회", notes = "모든 유저의 정보를 조회합니다. 소환사 정보와 리그 정보도 포합됩니다.")
     public ResponseEntity getUserList() throws Exception {
         return new ResponseEntity(userService.getUserList(), HttpStatus.OK);

@@ -89,16 +89,18 @@ public class BoardServiceImpl implements BoardService {
     public List<Board> getBoardList() throws Exception {
         return boardMapper.getBoardList();
     }
-    public List<Board> getBoardListByScore() throws Exception {  // Auth
+    public List<Board> getBoardList2(Search search) throws Exception {  // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
 
         UserInfo userInfo = userService.getUserInfoById(user_id);
+        search.setTierScore(userInfo.getSummonerInfo().getScore());
 
-        return boardMapper.getBoardListByScore(userInfo.getSummonerInfo().getScore());
+        return boardMapper.getBoardList2(search);
     }
+
     public BoardInfo getBoard(Long board_id) throws Exception {
         if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 보드 id

@@ -3,6 +3,7 @@ package controller;
 import annotation.Auth;
 import domain.Board;
 import domain.Comment;
+import domain.Search;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,19 +44,20 @@ public class BoardController {
         boardService.deleteBoard();
         return new ResponseEntity(HttpStatus.OK);
     }
-
+/*
     @ResponseBody
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation(value = "모든 모집 글(파티) 조회", notes = "모든 모집 글을 조회합니다. (최신순)")
     public ResponseEntity getBoardList() throws Exception {
         return new ResponseEntity(boardService.getBoardList(), HttpStatus.OK);
     }
-
+*/
     @ResponseBody
-    @RequestMapping(value = "/list/score", method = RequestMethod.GET)
-    @ApiOperation(value = "모든 모집 글(파티) 조회", notes = "모든 모집 글을 조회합니다. (자신과 비슷한 점수)")
-    public ResponseEntity getBoardListByScore() throws Exception {
-        return new ResponseEntity(boardService.getBoardListByScore(), HttpStatus.OK);
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation(value = "모든 모집 글(파티) 조회", notes = "모든 모집 글을 조회합니다. (조건)")
+    public ResponseEntity getBoardList(@RequestParam(value = "score", required = false, defaultValue = "false") Boolean score,
+                                              @RequestParam(value = "empty", required = false, defaultValue = "false") Boolean empty) throws Exception {
+        return new ResponseEntity(boardService.getBoardList2(new Search(score, empty)), HttpStatus.OK);
     }
 
     @ResponseBody

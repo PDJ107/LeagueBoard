@@ -1,9 +1,7 @@
 package repository;
 
-import domain.Board;
-import domain.BoardInfo;
-import domain.Comment;
-import domain.Member;;
+import domain.*;
+;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +15,7 @@ public interface BoardMapper {
     void updateBoard(Board board);
     void deleteBoardByUserId(Long user_id);
     List<Board> getBoardList();
-    List<Board> getBoardListByScore(Integer score);
+    List<Board> getBoardList2(Search search);
     BoardInfo getBoard(Long board_id);
     Board getBoardByUserId(Long user_id);
 

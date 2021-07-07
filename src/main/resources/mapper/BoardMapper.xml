@@ -34,9 +34,14 @@
         ORDER BY post_time DESC;
     </select>
 
-    <select id="getBoardListByScore" parameterType="Integer" resultType="domain.Board">
-        SELECT * FROM league_board_db.board
-        ORDER BY ABS(mean_score-#{score}) ASC;
+    <select id="getBoardList2" parameterType="domain.Search" resultType="domain.Board">
+        SELECT * FROM league_board_db.board as b
+        <if test="empty">
+        WHERE (SELECT COUNT(*) FROM league_board_db.member as m WHERE b.id = m.board_id) &lt; 4
+        </if>
+        <if test="score">
+        ORDER BY ABS(mean_score-#{tierScore}) ASC;
+        </if>
     </select>
 
     <resultMap id="boardInfoMap" type="domain.BoardInfo">

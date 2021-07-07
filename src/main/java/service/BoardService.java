@@ -1,9 +1,6 @@
 package service;
 
-import domain.Board;
-import domain.BoardInfo;
-import domain.Comment;
-import domain.Member;
+import domain.*;
 
 import java.util.List;
 
@@ -16,7 +13,7 @@ public interface BoardService {
     void deleteBoard() throws Exception; // Auth
     // 글 목록 검색
     List<Board> getBoardList() throws Exception;
-    List<Board> getBoardListByScore() throws Exception;  // Auth
+    List<Board> getBoardList2(Search search) throws Exception;  // Auth
     BoardInfo getBoard(Long board_id) throws Exception;
 
     // 댓글 작성
