@@ -218,4 +218,8 @@ public class UserServiceImpl implements UserService {
             userMapper.addReport(report);
         }
     }
+
+    public Boolean checkUser(Long user_id) {
+        return userMapper.checkUserById(user_id);
+    }
 }

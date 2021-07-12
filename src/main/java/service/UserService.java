@@ -41,4 +41,6 @@ public interface UserService {
     String loginUser(User user) throws Exception;
 
     void reportUser(Report report) throws Exception;
+
+    Boolean checkUser(Long user_id);
 }

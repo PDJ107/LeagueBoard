@@ -3,6 +3,7 @@ package serviceImpl;
 import domain.*;
 import exception.BoardException;
 import exception.ErrorCode;
+import exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -38,7 +39,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         // 예외 : 파티에 속해있는지 체크
         if(boardMapper.checkMemberByUserId(user_id) || boardMapper.checkBoardByUserId(user_id))
             throw new BoardException(ErrorCode.Party_Already_Exists); // 이미 참가중
@@ -64,6 +65,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
             board.setAdmin_id(user_id);
@@ -98,7 +100,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
             // 모든 멤버 강퇴
@@ -119,7 +121,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         UserInfo userInfo = userService.getUserInfoById(user_id);
         search.setTierScore(userInfo.getSummonerInfo().getScore());
 
@@ -140,6 +142,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         Long board_id;
         if(boardMapper.checkBoardByUserId(user_id)) {
             board_id = boardMapper.getBoardByUserId(user_id).getId();
@@ -162,6 +165,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         Comment comment = new Comment();
         comment.setContents(contents);
@@ -188,6 +192,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         Comment target_comment = boardMapper.getCommentById(comment_id);
 
@@ -208,6 +213,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         Comment target_comment = boardMapper.getCommentById(comment_id);
 
@@ -231,6 +237,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         if(!boardMapper.checkBoardByUserId(user_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
@@ -253,6 +260,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         if(!boardMapper.checkBoardByUserId(user_id)) return; // 보드가 없음
         Long board_id = boardMapper.getBoardByUserId(user_id).getId();
@@ -272,6 +280,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         // 예외 : 파티에 속해있는지 체크
         if(boardMapper.checkMemberByUserId(user_id) || boardMapper.checkBoardByUserId(user_id))
@@ -291,6 +300,7 @@ public class BoardServiceImpl implements BoardService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
+        if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         if(boardMapper.checkMemberByUserId(user_id)) {// 멤버로 참가중일 경우
             Member member = new Member();
