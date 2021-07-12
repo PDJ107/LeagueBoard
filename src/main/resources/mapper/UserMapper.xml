@@ -75,6 +75,17 @@
                                  ON l.user_id = u.id;
     </select>
 
+    <!--Integer getSumOfScore(List<Long> idList)-->
+    <select id="getSumOfScore" parameterType="List" resultType="Integer">
+        SELECT SUM(score)
+        FROM league_board_db.summoner
+        WHERE
+        <foreach collection="list" item="item" separator="OR">
+            user_id = #{item}
+        </foreach>
+        ;
+    </select>
+
 
     <select id="checkUserById" parameterType="Long" resultType="Boolean">
         SELECT EXISTS ( SELECT * FROM league_board_db.user WHERE id = #{id});
@@ -95,9 +106,13 @@
         INSERT INTO league_board_db.summoner(user_id, encrypted_name, puuid, profile_icon_id, level, score)
         VALUE(#{user_id}, #{encrypted_name}, #{puuid}, #{profile_icon_id}, #{level}, #{score});
     </insert>
-    <insert id="addLeagueInfo" parameterType="domain.League">
+    <insert id="addLeagueInfo" parameterType="List">
         INSERT INTO league_board_db.league(user_id, tier, `rank`, `point`, wins, losses, queue_type)
-        VALUE(#{user_id}, #{tier}, #{rank}, #{point}, #{wins}, #{losses}, #{queue_type});
+        VALUE
+        <foreach collection="list" item="item" separator=",">
+            (#{item.user_id}, #{item.tier}, #{item.rank}, #{item.point}, #{item.wins}, #{item.losses}, #{item.queue_type})
+        </foreach>
+        ;
     </insert>
 
     <delete id="deleteUser" parameterType="Long">

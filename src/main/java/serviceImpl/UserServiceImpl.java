@@ -155,9 +155,11 @@ public class UserServiceImpl implements UserService {
 
         // update leagueInfo
         userMapper.deleteLeagueInfo(id);
-        for(int i = 0; i < leagueList.size(); ++i) {
-            leagueList.get(i).setUser_id(id);
-            userMapper.addLeagueInfo(leagueList.get(i));
+        if(leagueList.size() > 0) {
+            for (int i = 0; i < leagueList.size(); ++i) {
+                leagueList.get(i).setUser_id(id);
+            }
+            userMapper.addLeagueInfo(leagueList);
         }
     }
 
@@ -221,5 +223,9 @@ public class UserServiceImpl implements UserService {
 
     public Boolean checkUser(Long user_id) {
         return userMapper.checkUserById(user_id);
+    }
+
+    public Integer getSumOfScore(List<Long> idList) {
+        return userMapper.getSumOfScore(idList);
     }
 }

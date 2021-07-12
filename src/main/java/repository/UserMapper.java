@@ -12,6 +12,7 @@ public interface UserMapper {
     User getUserById(Long id);
     User getUserByAccount(String account);
     UserInfo getUserInfo(Long id);
+    Integer getSumOfScore(List<Long> idList);
 
     boolean checkUserById(Long id);
     boolean checkUserByAccount(String account);
@@ -19,7 +20,7 @@ public interface UserMapper {
 
     void addUser(User user);
     void addSummonerInfo(Summoner summoner);
-    void addLeagueInfo(League league);
+    void addLeagueInfo(List<League> leagueList);
 
     void deleteUser(Long id);
     void deleteLeagueInfo(Long user_id);

@@ -43,4 +43,6 @@ public interface UserService {
     void reportUser(Report report) throws Exception;
 
     Boolean checkUser(Long user_id);
+
+    Integer getSumOfScore(List<Long> idList);
 }

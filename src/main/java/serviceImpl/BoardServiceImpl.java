@@ -84,10 +84,8 @@ public class BoardServiceImpl implements BoardService {
             idList.add(boardInfo.getMemberList().get(i).getUser_id());
         }
 
-        Integer sum = 0;
-        for(int i = 0; i < idList.size(); ++i) {
-            sum += userService.getUserInfoById(idList.get(i)).getSummonerInfo().getScore();
-        }
+        Integer sum = userService.getSumOfScore(idList);
+
         Board board = new Board();
         board.setId(board_id);
         board.setMean_score(sum / idList.size());
@@ -104,14 +102,15 @@ public class BoardServiceImpl implements BoardService {
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
             // 모든 멤버 강퇴
-            List<Member> userList = boardMapper.getMemberList(boardMapper.getBoardByUserId(user_id).getId());
+            /*List<Member> userList = boardMapper.getMemberList(boardMapper.getBoardByUserId(user_id).getId());
             Member member = new Member();
             member.setBoard_id(boardMapper.getBoardByUserId(user_id).getId());
             for(int i = 0; i < userList.size(); ++i) {
                 //deleteUserAtParty(userList.get(i).getId());
                 member.setUser_id(userList.get(i).getUser_id());
                 boardMapper.deleteMember(member);
-            }
+            }*/
+            boardMapper.deleteAllMember(boardMapper.getBoardByUserId(user_id).getId());
             boardMapper.deleteBoardByUserId(user_id);
         }
     }
