@@ -39,7 +39,6 @@ public interface UserService {
 
     // 로그인 : 토큰 반환
     String loginUser(User user) throws Exception;
-    void logoutUser() throws Exception;
 
     void reportUser(Report report) throws Exception;
 }

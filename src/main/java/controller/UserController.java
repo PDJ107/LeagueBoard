@@ -78,16 +78,6 @@ public class UserController {
         return new ResponseEntity(userService.loginUser(user), HttpStatus.OK); // 클라이언트 응답 메소드
     }
 
-    // 로그아웃
-    @Auth
-    @ResponseBody
-    @RequestMapping(value = "/logout", method = RequestMethod.PUT)
-    @ApiOperation(value = "로그아웃", notes = "토큰을 로그아웃합니다.")
-    public ResponseEntity logoutUser() throws Exception{
-        userService.logoutUser();
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
     // 회원가입 (user를 db에 추가한 후 토큰 발급)
     @ResponseBody
     @RequestMapping(value = "signup", method = RequestMethod.POST)

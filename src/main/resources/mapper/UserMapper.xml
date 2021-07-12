@@ -19,6 +19,7 @@
         SELECT
             id,
             account,
+            password,
             summoner_name,
             report_num
         FROM league_board_db.user

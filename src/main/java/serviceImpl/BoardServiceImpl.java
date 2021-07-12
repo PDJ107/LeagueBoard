@@ -5,6 +5,7 @@ import exception.BoardException;
 import exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -104,14 +105,15 @@ public class BoardServiceImpl implements BoardService {
             List<Member> userList = boardMapper.getMemberList(boardMapper.getBoardByUserId(user_id).getId());
             Member member = new Member();
             member.setBoard_id(boardMapper.getBoardByUserId(user_id).getId());
-            for(int i = 0; i < userList.size(); ++i)
+            for(int i = 0; i < userList.size(); ++i) {
                 //deleteUserAtParty(userList.get(i).getId());
                 member.setUser_id(userList.get(i).getUser_id());
                 boardMapper.deleteMember(member);
-
+            }
             boardMapper.deleteBoardByUserId(user_id);
         }
     }
+
     public List<Board> getBoardList(Search search) throws Exception {  // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -258,7 +260,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 참가
-    @Transactional //
+    @Transactional(isolation = Isolation.DEFAULT) //
     public void enterParty(Long board_id) throws Exception { // Auth
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))

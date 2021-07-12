@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
             userMapper.deleteUser(user_id);
 
             // 토큰 로그아웃 처리
-            jwtUtil.logoutToken(request.getHeader("Authorization"));
+            //jwtUtil.logoutToken(request.getHeader("Authorization"));
         }
     }
 
@@ -195,13 +195,6 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ErrorCode.User_Invalid_Request); // 잘못된 패스워드
 
         return jwtUtil.genJsonWebToken(userdata.getId());
-    }
-
-    public void logoutUser() throws Exception {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                        .getRequest();
-        jwtUtil.logoutToken(request.getHeader("Authorization"));
     }
 
     public void reportUser(Report report) throws Exception {
