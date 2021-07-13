@@ -46,11 +46,13 @@ public class BoardController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @ApiOperation(value = "모든 모집 글(파티) 조회", notes = "모든 모집 글을 조회합니다. (조건)")
+    @RequestMapping(value = "/page/{pageNum}", method = RequestMethod.GET)
+    @ApiOperation(value = "모집 글(파티) 조회 (페이지)", notes = "모집 글을 조회합니다. (조건)")
     public ResponseEntity getBoardList(@RequestParam(value = "score", required = false, defaultValue = "false") Boolean score,
-                                              @RequestParam(value = "empty", required = false, defaultValue = "false") Boolean empty) throws Exception {
-        return new ResponseEntity(boardService.getBoardList(new Search(score, empty)), HttpStatus.OK);
+                                       @RequestParam(value = "empty", required = false, defaultValue = "false") Boolean empty,
+                                       @RequestParam(value = "count", required = false, defaultValue = "5") Integer count,
+                                       @PathVariable Integer pageNum) throws Exception {
+        return new ResponseEntity(boardService.getBoardList(new Search(score, empty, count, pageNum)), HttpStatus.OK);
     }
 
     @ResponseBody

@@ -44,7 +44,10 @@ public enum ErrorCode {
 
     Title_Not_Valid("BOARD_13", "제목의 길이는 1 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
     Contents_Not_Valid("BOARD_14", "내용의 길이는 1 ~ 150자 입니다.", HttpStatus.BAD_REQUEST),
-    Comment_Not_Valid("BOARD_15", "댓글의 길이는 1 ~ 50자 입니다.", HttpStatus.BAD_REQUEST)
+    Comment_Not_Valid("BOARD_15", "댓글의 길이는 1 ~ 50자 입니다.", HttpStatus.BAD_REQUEST),
+    PageNum_Not_Valid("BOARD_16", "페이지는 0보다 커야합니다.", HttpStatus.BAD_REQUEST),
+    PageCount_Not_Valid("BOARD_17", "게시글의 수는 1 ~ 20입니다.", HttpStatus.BAD_REQUEST),
+    PageNum_Is_Null("BOARD_18", "pageNum이 Null입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private String code;

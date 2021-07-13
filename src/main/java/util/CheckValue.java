@@ -1,5 +1,6 @@
 package util;
 
+import domain.Search;
 import exception.BoardException;
 import exception.ErrorCode;
 import exception.UserException;
@@ -40,5 +41,11 @@ public class CheckValue {
         if(contents == null) throw new BoardException(ErrorCode.Comment_Is_Null);
         else if(contents.length() < 1 || contents.length() > 50)
             throw new BoardException(ErrorCode.Comment_Not_Valid);
+    }
+
+    public void checkSearch(Search search) throws Exception{
+        if(search.getPage() == null) throw new BoardException(ErrorCode.PageNum_Is_Null);
+        else if(search.getCount() < 1 || search.getCount() > 20) throw new BoardException(ErrorCode.PageCount_Not_Valid);
+        else if(search.getPage() < 1) throw new BoardException(ErrorCode.PageNum_Not_Valid);
     }
 }

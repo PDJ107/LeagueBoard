@@ -41,8 +41,9 @@
         WHERE (SELECT COUNT(*) FROM league_board_db.member as m WHERE b.id = m.board_id) &lt; 4
         </if>
         <if test="score">
-        ORDER BY ABS(mean_score-#{tierScore}) ASC;
+        ORDER BY ABS(mean_score-#{tierScore}) ASC
         </if>
+        LIMIT #{start}, #{count};
     </select>
 
     <resultMap id="boardInfoMap" type="domain.BoardInfo">

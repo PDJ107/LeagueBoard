@@ -36,10 +36,8 @@ public class BoardServiceImpl implements BoardService {
 
     // 모집글(파티) 작성
     public void addBoard(Board board) throws Exception { // Auth
-        //if(board.getTitle() == null) throw new BoardException(ErrorCode.Title_Is_Null);
         checkValue.checkTitle(board.getTitle());
 
-        //if(board.getContents() == null) throw new BoardException(ErrorCode.Contents_Is_Null);
         checkValue.checkContents(board.getContents());
 
         HttpServletRequest request =
@@ -108,20 +106,13 @@ public class BoardServiceImpl implements BoardService {
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
             // 모든 멤버 강퇴
-            /*List<Member> userList = boardMapper.getMemberList(boardMapper.getBoardByUserId(user_id).getId());
-            Member member = new Member();
-            member.setBoard_id(boardMapper.getBoardByUserId(user_id).getId());
-            for(int i = 0; i < userList.size(); ++i) {
-                //deleteUserAtParty(userList.get(i).getId());
-                member.setUser_id(userList.get(i).getUser_id());
-                boardMapper.deleteMember(member);
-            }*/
             boardMapper.deleteAllMember(boardMapper.getBoardByUserId(user_id).getId());
             boardMapper.deleteBoardByUserId(user_id);
         }
     }
 
     public List<Board> getBoardList(Search search) throws Exception {  // Auth
+        checkValue.checkSearch(search); // 예외 검사
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -165,7 +156,6 @@ public class BoardServiceImpl implements BoardService {
 
     // 댓글 작성
     public void addComment(String contents) throws Exception { // Auth
-        //if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
 
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
