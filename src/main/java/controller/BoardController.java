@@ -24,7 +24,7 @@ public class BoardController {
     @ApiOperation(value = "모집 글(파티) 추가", notes = "참여중인 파티가 없을경우 모집 글을 등록합니다.")
     public ResponseEntity addBoard(@RequestBody Board board) throws Exception {
         boardService.addBoard(board);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Auth
@@ -76,7 +76,7 @@ public class BoardController {
     @ApiOperation(value = "댓글 작성", notes = "자신이 속한 모집 글에 댓글을 작성합니다.")
     public ResponseEntity addComment(@RequestBody String contents) throws Exception {
         boardService.addComment(contents);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Auth

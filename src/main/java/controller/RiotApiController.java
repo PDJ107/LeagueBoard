@@ -32,7 +32,6 @@ public class RiotApiController {
     @RequestMapping(value = "/spectator/{encrypted_summoner_name}", method = RequestMethod.GET)
     @ApiOperation(value = "게임 중인지 여부 체크")
     public ResponseEntity getSpectatorInfo(@PathVariable String encrypted_summoner_name) throws Exception {
-        //return new ResponseEntity(riotApiService.getSpectatorInfo(encrypted_summoner_name), HttpStatus.OK);
         return new ResponseEntity(riotApiService.isPlaying(encrypted_summoner_name), HttpStatus.OK);
     }
 }

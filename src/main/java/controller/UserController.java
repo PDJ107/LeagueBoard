@@ -75,7 +75,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "로그인", notes = "account 와 password 를 검사하고 토큰을 반환합니다.")
     public ResponseEntity checkUser(@RequestBody User user) throws Exception{
-        return new ResponseEntity(userService.loginUser(user), HttpStatus.OK); // 클라이언트 응답 메소드
+        return new ResponseEntity(userService.loginUser(user), HttpStatus.CREATED); // 클라이언트 응답 메소드
     }
 
     // 회원가입 (user를 db에 추가한 후 토큰 발급)
@@ -83,7 +83,7 @@ public class UserController {
     @RequestMapping(value = "signup", method = RequestMethod.POST)
     @ApiOperation(value = "회원가입", notes = "유저를 등록합니다. 이때 소환사 이름이 실제로 존재해야 합니다.")
     public ResponseEntity addUser(@RequestBody User user) throws Exception{
-        return new ResponseEntity(userService.addUser(user), HttpStatus.OK); // 클라이언트 응답 메소드
+        return new ResponseEntity(userService.addUser(user), HttpStatus.CREATED); // 클라이언트 응답 메소드
     }
 
     // 회원탈퇴 (유저 정보 삭제)
