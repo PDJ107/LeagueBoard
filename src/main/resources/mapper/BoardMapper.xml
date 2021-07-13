@@ -53,6 +53,7 @@
             <result property="contents" column="contents" />
             <result property="post_time" column="post_time" />
             <result property="mean_score" column="mean_score" />
+            <result property="member_num" column="member_num" />
         </association>
 
         <collection property="commentList" ofType="domain.Comment">
@@ -64,7 +65,7 @@
     </resultMap>
     <!--BoardInfo getBoard(Long board_id);-->
     <select id="getBoard" parameterType="Long" resultMap="boardInfoMap">
-        SELECT b.id, b.admin_id, b.title, b.contents, b.post_time, b.mean_score,
+        SELECT b.id, b.admin_id, b.title, b.contents, b.post_time, b.mean_score, b.member_num,
                c.id as cid, c.writer_id, c.contents as c_contents, c.post_time as c_post_time
         FROM league_board_db.board as b
                  LEFT OUTER JOIN league_board_db.comment as c
@@ -134,7 +135,14 @@
     </select>
 
     <select id="getMemberNumById" parameterType="Long" resultType="Integer">
-        SELECT COUNT(*) FROM league_board_db.member WHERE board_id = #{board_id};
+        SELECT COUNT(*)+1 FROM league_board_db.member WHERE board_id = #{board_id};
     </select>
+
+    <update id="updateMemberNum" parameterType="Long">
+        UPDATE league_board_db.board
+        SET member_num =
+                (SELECT COUNT(*)+1 FROM league_board_db.member WHERE board_id = #{board_id})
+        WHERE id = #{board_id};
+    </update>
 
 </mapper>

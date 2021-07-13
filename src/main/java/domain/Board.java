@@ -10,6 +10,15 @@ public class Board {
     protected String contents; // 1 ~ 150
     protected String post_time; // 나중에 타입 체크
     protected Integer mean_score;
+    protected Integer member_num;
+
+    public Integer getMember_num() {
+        return member_num;
+    }
+
+    public void setMember_num(Integer member_num) {
+        this.member_num = member_num;
+    }
 
     public Integer getMean_score() {
         return mean_score;

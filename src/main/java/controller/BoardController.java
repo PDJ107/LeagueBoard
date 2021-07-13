@@ -114,7 +114,7 @@ public class BoardController {
 
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/{board_id}/member", method = RequestMethod.POST)
+    @RequestMapping(value = "/{board_id}", method = RequestMethod.POST)
     @ApiOperation(value = "파티 참가", notes = "특정 파티에 참가합니다. 이때 방장까지 총 5명 참가할 수 있습니다.")
     public ResponseEntity enterParty(@PathVariable Long board_id) throws Exception {
         boardService.enterParty(board_id);

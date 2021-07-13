@@ -35,4 +35,6 @@ public interface BoardMapper {
     List<Member> getMemberList(Long board_id);
     Member getMemberByUserId(Long user_id);
     Integer getMemberNumById(Long board_id);
+
+    void updateMemberNum(Long board_id);
 }
