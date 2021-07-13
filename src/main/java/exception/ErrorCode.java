@@ -8,12 +8,15 @@ public enum ErrorCode {
     Account_Already_Exists("USER_03", "이미 존재하는 Account 입니다.", HttpStatus.BAD_REQUEST),
     Report_Invalid_Request("USER_04", "자신은 신고할 수 없습니다.", HttpStatus.BAD_REQUEST),
     Report_Code_Is_Null("USER_05", "유저 신고 코드가 Null입니다.", HttpStatus.BAD_REQUEST),
-    Account_Is_Null("USER_06", "account가 Null입니다.", HttpStatus.BAD_REQUEST),
-    Password_Is_Null("USER_07", "password가 Null입니다.", HttpStatus.BAD_REQUEST),
-    User_Id_Is_Null("USER_08", "User id가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Report_Code_Not_Valid("USER_06", "잘못된 report code 입니다.", HttpStatus.BAD_REQUEST),
+    Report_Same_User("USER_07", "같은 유저를 2번 신고할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    Account_Is_Null("USER_08", "account가 Null입니다.", HttpStatus.BAD_REQUEST),
+    Password_Is_Null("USER_09", "password가 Null입니다.", HttpStatus.BAD_REQUEST),
+    User_Id_Is_Null("USER_10", "User id가 Null입니다.", HttpStatus.BAD_REQUEST),
 
-    Account_Not_Valid("USER_09", "account의 길이는 1 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
-    Password_Not_Valid("USER_10", "password의 길이는 4 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+    Account_Not_Valid("USER_11", "account의 길이는 1 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+    Password_Not_Valid("USER_12", "password의 길이는 4 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+
 
     Summoner_Not_Found("RIOT_API_01", "존재하지 않는 소환사 이름입니다.", HttpStatus.NOT_FOUND),
     RiotApi_Request_Failed("RIOT_API_02", "Riot API 요청에 실패했습니다.", HttpStatus.BAD_REQUEST),
@@ -21,12 +24,14 @@ public enum ErrorCode {
 
     Summoner_Name_Not_Valid("RIOT_API_04", "소환사 이름은 20자보다 작습니다. (3 ~ 16)", HttpStatus.BAD_REQUEST),
 
+
     Token_Is_Null("TOKEN_01", "토큰이 Null 입니다.", HttpStatus.UNAUTHORIZED),
     Expired_Token("TOKEN_02", "토큰이 만료됐습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token("TOKEN_03", "토큰이 잘못됐습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token_Bearer("TOKEN_04", "토큰이 Bearer로 시작하지 않습니다.", HttpStatus.UNAUTHORIZED),
     Invalid_Token_User_Id("TOKEN_05", "토큰의 User Id에 해당하는 유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     Logged_Out_Token("TOKEN_06", "로그아웃된 토큰입니다.", HttpStatus.UNAUTHORIZED),
+
 
     Party_Already_Exists("BOARD_01", "파티가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     Party_Not_Exists("BOARD_02", "참가중인 파티가 없습니다.", HttpStatus.BAD_REQUEST),

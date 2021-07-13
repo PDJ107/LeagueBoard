@@ -18,6 +18,7 @@ import util.JwtUtil;
 import util.TierScore;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -196,11 +197,9 @@ public class UserServiceImpl implements UserService {
     // 로그인 : 토큰 반환
     public String loginUser(User user) throws Exception {
         // account null 예외처리
-        //if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
         checkValue.checkAccount(user.getAccount());
 
         // password null 예외처리
-        //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
         checkValue.checkPassword(user.getPassword());
 
         if(!userMapper.checkUserByAccount(user.getAccount()))
@@ -219,7 +218,10 @@ public class UserServiceImpl implements UserService {
         if(report.getPerpetrator_id() == null) throw new UserException(ErrorCode.User_Id_Is_Null);
         if(report.getCode() == null) throw new UserException(ErrorCode.Report_Code_Is_Null);
 
+        List<ReportCode> reportCodes = new ArrayList<>();
+        reportCodes = userMapper.getReportCodes();
         // report code 예외처리 ()
+        checkValue.reportCheck(report, reportCodes);
 
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -228,13 +230,22 @@ public class UserServiceImpl implements UserService {
 
         if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else {
+            report.setVictim_id(user_id);
+
             if(!userMapper.checkUserById(report.getPerpetrator_id()))
                 throw new UserException(ErrorCode.User_Not_Found);
             else if(user_id == report.getPerpetrator_id())
                 throw new UserException(ErrorCode.Report_Invalid_Request); // 자신을 신고할 수 없음
-            report.setVictim_id(user_id);
+            else if(userMapper.isReported(report))
+                throw new UserException(ErrorCode.Report_Same_User); // 같은 유저를 2번 신고할 수 없음
+
             userMapper.addReport(report);
+            userMapper.updateReportNum(report.getPerpetrator_id());
         }
+    }
+
+    public List<ReportCode> getReportCodes() {
+        return userMapper.getReportCodes();
     }
 
     public Boolean checkUser(Long user_id) {

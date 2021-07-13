@@ -86,6 +86,18 @@
         ;
     </select>
 
+    <select id="getReportCodes" resultType="domain.ReportCode">
+        SELECT * FROM league_board_db.report_code;
+    </select>
+
+    <select id="isReported" parameterType="domain.Report" resultType="Boolean">
+        SELECT EXISTS
+            (
+            SELECT * FROM league_board_db.report
+            WHERE victim_id = #{victim_id} AND perpetrator_id = #{perpetrator_id}
+            );
+    </select>
+
 
     <select id="checkUserById" parameterType="Long" resultType="Boolean">
         SELECT EXISTS ( SELECT * FROM league_board_db.user WHERE id = #{id});
@@ -151,11 +163,13 @@
     <insert id="addReport" parameterType="domain.Report">
         INSERT INTO league_board_db.report(victim_id, perpetrator_id, code)
             VALUE(#{victim_id}, #{perpetrator_id}, #{code});
-
-        UPDATE league_board_db.user
-        SET report_num = report_num + 1
-        WHERE id = #{perpetrator_id};
     </insert>
+
+    <update id="updateReportNum" parameterType="Long">
+        UPDATE league_board_db.user
+        SET report_num = (SELECT COUNT(*) FROM league_board_db.report WHERE perpetrator_id = #{perpetrator_id})
+        WHERE id = #{perpetrator_id};
+    </update>
 
 </mapper>
 

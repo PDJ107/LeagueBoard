@@ -105,4 +105,12 @@ public class UserController {
         userService.reportUser(reportData);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    // 신고 사유 리스트
+    @ResponseBody
+    @RequestMapping(value = "/report", method = RequestMethod.GET)
+    @ApiOperation(value = "신고 사유 리스트", notes = "신고 사유 리스트를 조회합니다.")
+    public ResponseEntity getReportCodes() throws Exception{
+        return new ResponseEntity(userService.getReportCodes(), HttpStatus.OK);
+    }
 }

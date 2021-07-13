@@ -1,10 +1,14 @@
 package util;
 
+import domain.Report;
+import domain.ReportCode;
 import domain.Search;
 import exception.BoardException;
 import exception.ErrorCode;
 import exception.UserException;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class CheckValue {
@@ -47,5 +51,15 @@ public class CheckValue {
         if(search.getPage() == null) throw new BoardException(ErrorCode.PageNum_Is_Null);
         else if(search.getCount() < 1 || search.getCount() > 20) throw new BoardException(ErrorCode.PageCount_Not_Valid);
         else if(search.getPage() < 1) throw new BoardException(ErrorCode.PageNum_Not_Valid);
+    }
+
+    public void reportCheck(Report report, List<ReportCode> reportCodes) {
+        if(report.getPerpetrator_id() == null) throw new UserException(ErrorCode.User_Id_Is_Null);
+        else if(report.getCode() == null) throw new UserException(ErrorCode.Report_Code_Is_Null);
+
+        Boolean isValid = false;
+        for(int i = 0; i < reportCodes.size(); ++i)
+            if(report.getCode() == reportCodes.get(i).getCode()) isValid = true;
+        if(!isValid) throw new UserException(ErrorCode.Report_Code_Not_Valid);
     }
 }

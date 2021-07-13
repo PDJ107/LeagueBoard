@@ -14,6 +14,10 @@ public interface UserMapper {
     UserInfo getUserInfo(Long id);
     Integer getSumOfScore(List<Long> idList);
 
+    List<ReportCode> getReportCodes();
+    boolean isReported(Report report);
+    void updateReportNum(Long perpetrator_id);
+
     boolean checkUserById(Long id);
     boolean checkUserByAccount(String account);
     boolean checkSummonerInfo(Long user_id);

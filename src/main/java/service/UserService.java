@@ -1,6 +1,7 @@
 package service;
 
 import domain.Report;
+import domain.ReportCode;
 import domain.User;
 import domain.UserInfo;
 
@@ -14,6 +15,8 @@ public interface UserService {
     User getUser() throws Exception;
     UserInfo getUserInfo() throws Exception;
     UserInfo getUserInfoById(Long id) throws Exception;
+
+    List<ReportCode> getReportCodes();
 
     // 소환사 정보 반환 by id
     //Summoner getSummonerInfo(Long id) throws Exception;
