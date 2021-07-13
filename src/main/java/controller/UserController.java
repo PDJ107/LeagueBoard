@@ -54,7 +54,7 @@ public class UserController {
     // 유저 정보 업데이트
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/me", method = RequestMethod.PUT)
+    @RequestMapping(value = "/me", method = RequestMethod.PATCH)
     @ApiOperation(value = "내 정보 수정", notes = "자신의 정보를 수정합니다. account, password, summoner_name 을 수정할 수 있습니다.")
     public ResponseEntity updateUser(@RequestBody User user) throws Exception{
         userService.updateUser(user);

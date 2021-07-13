@@ -12,9 +12,14 @@ public enum ErrorCode {
     Password_Is_Null("USER_07", "password가 Null입니다.", HttpStatus.BAD_REQUEST),
     User_Id_Is_Null("USER_08", "User id가 Null입니다.", HttpStatus.BAD_REQUEST),
 
+    Account_Not_Valid("USER_09", "account의 길이는 1 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+    Password_Not_Valid("USER_10", "password의 길이는 4 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+
     Summoner_Not_Found("RIOT_API_01", "존재하지 않는 소환사 이름입니다.", HttpStatus.NOT_FOUND),
     RiotApi_Request_Failed("RIOT_API_02", "Riot API 요청에 실패했습니다.", HttpStatus.BAD_REQUEST),
     Summoner_Name_Is_Null("RIOT_API_03", "소환사 이름이 Null입니다.", HttpStatus.BAD_REQUEST),
+
+    Summoner_Name_Not_Valid("RIOT_API_04", "소환사 이름은 20자보다 작습니다. (3 ~ 16)", HttpStatus.BAD_REQUEST),
 
     Token_Is_Null("TOKEN_01", "토큰이 Null 입니다.", HttpStatus.UNAUTHORIZED),
     Expired_Token("TOKEN_02", "토큰이 만료됐습니다.", HttpStatus.UNAUTHORIZED),

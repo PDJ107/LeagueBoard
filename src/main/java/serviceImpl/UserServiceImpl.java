@@ -69,14 +69,16 @@ public class UserServiceImpl implements UserService {
 
     // User 추가 : 토큰 반환
     public String addUser(User user) throws Exception {
-        // account null 예외처리
-        if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
-        // password null 예외처리
-        if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
-        // 소환사이름 예외처리
-        if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
+        // account 예외처리
+        user.checkAccount();
 
-        // 유저 정보 예외처리 (예: account 8 ~ 15자 제한 등)
+        // password 예외처리
+        //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
+        user.checkPassword();
+
+        // 소환사이름 예외처리
+        //if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
+        user.checkSummonerName();
 
         if(userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.Account_Already_Exists); // account 중복
@@ -107,12 +109,20 @@ public class UserServiceImpl implements UserService {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
-        // account 중복 체크
-        if(user.getAccount() != null && userMapper.checkUserByAccount(user.getAccount()))
-            throw new UserException(ErrorCode.Account_Already_Exists); // 이미 존재하는 유저
+
+        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
+
+        // account 체크
+        if(user.getAccount() != null) {
+            user.checkAccount(); // 길이 체크
+            if(userMapper.checkUserByAccount(user.getAccount()))
+                throw new UserException(ErrorCode.Account_Already_Exists); // 이미 존재하는 유저
+        }
+
 
         // password 암호화
         if(user.getPassword() != null) {
+            user.checkPassword(); // 길이 체크
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             String pw = encoder.encode(user.getPassword());
             user.setPassword(pw);
@@ -120,6 +130,7 @@ public class UserServiceImpl implements UserService {
 
         if(user.getSummoner_name() != null) {
             // summoner_name 체크
+            user.checkSummonerName();
             if(!riotApiService.checkSummoner(user.getSummoner_name()))
                 throw new UserException(ErrorCode.Summoner_Not_Found); // 잘못된 summoner_name
             updateUserInfo(user_id);
@@ -127,10 +138,7 @@ public class UserServiceImpl implements UserService {
 
         user.setId(user_id);
 
-        if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id); // 잘못된 token id
-        else userMapper.updateUser(user);
-
-
+        userMapper.updateUser(user);
     }
 
     // riot api 사용, summoner & League 업데이트
@@ -183,9 +191,12 @@ public class UserServiceImpl implements UserService {
     // 로그인 : 토큰 반환
     public String loginUser(User user) throws Exception {
         // account null 예외처리
-        if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
+        //if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
+        user.checkAccount();
+
         // password null 예외처리
-        if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
+        //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
+        user.checkPassword();
 
         if(!userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.User_Invalid_Request);
