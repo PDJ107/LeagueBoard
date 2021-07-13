@@ -1,6 +1,6 @@
 # LeagueBoard
 
-### LOL 팀원 매칭 게시판
+### LOL 팀원 매칭 게시판 - Backend
 
 
 * 프로젝트 개요
