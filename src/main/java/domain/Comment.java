@@ -1,13 +1,15 @@
 package domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import exception.BoardException;
+import exception.ErrorCode;
 
 @JsonIgnoreProperties({"board_id", "is_deleted"})
 public class Comment {
     protected Long id;
     protected Long writer_id;
     protected Long board_id;
-    protected String contents;
+    protected String contents; // 1 ~ 50
     protected String post_time; // 나중에 타입 체크
     protected Boolean is_deleted;
 

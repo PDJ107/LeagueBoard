@@ -39,7 +39,12 @@ public enum ErrorCode {
     Member_Not_Found("BOARD_09", "해당 멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     Board_Id_Is_Null("BOARD_10", "Board Id가 Null입니다.", HttpStatus.BAD_REQUEST),
     Title_Is_Null("BOARD_11", "제목이 Null입니다.", HttpStatus.BAD_REQUEST),
-    Contents_Is_Null("BOARD_12", "내용이 Null입니다.", HttpStatus.BAD_REQUEST)
+    Contents_Is_Null("BOARD_12", "내용이 Null입니다.", HttpStatus.BAD_REQUEST),
+    Comment_Is_Null("BOARD_13", "댓글이 Null입니다.", HttpStatus.BAD_REQUEST),
+
+    Title_Not_Valid("BOARD_13", "제목의 길이는 1 ~ 20자 입니다.", HttpStatus.BAD_REQUEST),
+    Contents_Not_Valid("BOARD_14", "내용의 길이는 1 ~ 150자 입니다.", HttpStatus.BAD_REQUEST),
+    Comment_Not_Valid("BOARD_15", "댓글의 길이는 1 ~ 50자 입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private String code;

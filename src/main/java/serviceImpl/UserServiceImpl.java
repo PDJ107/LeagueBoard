@@ -1,5 +1,6 @@
 package serviceImpl;
 
+import com.sun.tools.javac.comp.Check;
 import domain.*;
 import exception.ErrorCode;
 import exception.UserException;
@@ -12,6 +13,7 @@ import repository.UserMapper;
 import service.BoardService;
 import service.RiotApiService;
 import service.UserService;
+import util.CheckValue;
 import util.JwtUtil;
 import util.TierScore;
 
@@ -34,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TierScore tierScore;
+
+    @Autowired
+    private CheckValue checkValue;
 
     public List<UserInfo> getUserList() throws Exception {
         return userMapper.getUserList();
@@ -70,15 +75,15 @@ public class UserServiceImpl implements UserService {
     // User 추가 : 토큰 반환
     public String addUser(User user) throws Exception {
         // account 예외처리
-        user.checkAccount();
+        checkValue.checkAccount(user.getAccount());
 
         // password 예외처리
         //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
-        user.checkPassword();
+        checkValue.checkPassword(user.getPassword());
 
         // 소환사이름 예외처리
         //if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
-        user.checkSummonerName();
+        checkValue.checkSummonerName(user.getSummoner_name());
 
         if(userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.Account_Already_Exists); // account 중복
@@ -114,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
         // account 체크
         if(user.getAccount() != null) {
-            user.checkAccount(); // 길이 체크
+            checkValue.checkAccount(user.getAccount()); // 길이 체크
             if(userMapper.checkUserByAccount(user.getAccount()))
                 throw new UserException(ErrorCode.Account_Already_Exists); // 이미 존재하는 유저
         }
@@ -122,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
         // password 암호화
         if(user.getPassword() != null) {
-            user.checkPassword(); // 길이 체크
+            checkValue.checkPassword(user.getPassword()); // 길이 체크
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             String pw = encoder.encode(user.getPassword());
             user.setPassword(pw);
@@ -130,7 +135,7 @@ public class UserServiceImpl implements UserService {
 
         if(user.getSummoner_name() != null) {
             // summoner_name 체크
-            user.checkSummonerName();
+            checkValue.checkSummonerName(user.getSummoner_name());
             if(!riotApiService.checkSummoner(user.getSummoner_name()))
                 throw new UserException(ErrorCode.Summoner_Not_Found); // 잘못된 summoner_name
             updateUserInfo(user_id);
@@ -192,11 +197,11 @@ public class UserServiceImpl implements UserService {
     public String loginUser(User user) throws Exception {
         // account null 예외처리
         //if(user.getAccount() == null) throw new UserException(ErrorCode.Account_Is_Null);
-        user.checkAccount();
+        checkValue.checkAccount(user.getAccount());
 
         // password null 예외처리
         //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
-        user.checkPassword();
+        checkValue.checkPassword(user.getPassword());
 
         if(!userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.User_Invalid_Request);

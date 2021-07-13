@@ -10,24 +10,6 @@ public class User {
     protected String summoner_name; // 3 ~ 16
     protected Long report_num;
 
-    public void checkAccount() throws Exception{
-        if(account == null) throw new UserException(ErrorCode.Account_Is_Null);
-        else if(account.length() < 1 || account.length() > 20)
-            throw new UserException(ErrorCode.Account_Not_Valid);
-    }
-
-    public void checkPassword() throws Exception{
-        if(password == null) throw new UserException(ErrorCode.Password_Is_Null);
-        else if(password.length() < 4 || password.length() > 20)
-            throw new UserException(ErrorCode.Password_Not_Valid);
-    }
-
-    public void checkSummonerName() throws Exception{
-        if(summoner_name == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
-        else if(summoner_name.length() > 20)
-            throw new UserException(ErrorCode.Summoner_Name_Not_Valid);
-    }
-
     public Long getId() {
         return id;
     }

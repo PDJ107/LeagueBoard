@@ -29,8 +29,8 @@ public class BoardController {
 
     @Auth
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.PUT)
-    @ApiOperation(value = "모집 글(파티) 수정", notes = "자신이 만든 모집 글을 수정합니다.")
+    @RequestMapping(value = "", method = RequestMethod.PATCH)
+    @ApiOperation(value = "모집 글(파티) 수정", notes = "자신이 작성한 모집 글을 수정합니다.")
     public ResponseEntity updateBoard(@RequestBody Board board) throws Exception {
         boardService.updateBoard(board);
         return new ResponseEntity(HttpStatus.OK);
@@ -39,7 +39,7 @@ public class BoardController {
     @Auth
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    @ApiOperation(value = "모집 글(파티) 삭제", notes = "자신이 만든 모집 글을 삭제합니다. 파티의 멤버들은 모두 강퇴됩니다.")
+    @ApiOperation(value = "모집 글(파티) 삭제", notes = "자신이 작성한 모집 글을 삭제합니다. 파티의 멤버들은 모두 강퇴됩니다.")
     public ResponseEntity deleteBoard() throws Exception {
         boardService.deleteBoard();
         return new ResponseEntity(HttpStatus.OK);

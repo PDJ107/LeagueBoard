@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import repository.BoardMapper;
 import service.BoardService;
 import service.UserService;
+import util.CheckValue;
 import util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,10 +31,16 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CheckValue checkValue;
+
     // 모집글(파티) 작성
     public void addBoard(Board board) throws Exception { // Auth
-        if(board.getTitle() == null) throw new BoardException(ErrorCode.Title_Is_Null);
-        if(board.getContents() == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+        //if(board.getTitle() == null) throw new BoardException(ErrorCode.Title_Is_Null);
+        checkValue.checkTitle(board.getTitle());
+
+        //if(board.getContents() == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+        checkValue.checkContents(board.getContents());
 
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -45,10 +52,6 @@ public class BoardServiceImpl implements BoardService {
             throw new BoardException(ErrorCode.Party_Already_Exists); // 이미 참가중
         else {
             UserInfo userInfo = userService.getUserInfoById(user_id);
-
-            // userInfo null error
-
-            System.out.println(user_id);
 
             board.setAdmin_id(user_id);
 
@@ -66,8 +69,11 @@ public class BoardServiceImpl implements BoardService {
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
+
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
+            if(board.getTitle() != null) checkValue.checkTitle(board.getTitle());
+            if(board.getContents() != null) checkValue.checkContents(board.getContents());
             board.setAdmin_id(user_id);
             boardMapper.updateBoard(board);
         }
@@ -159,7 +165,8 @@ public class BoardServiceImpl implements BoardService {
 
     // 댓글 작성
     public void addComment(String contents) throws Exception { // Auth
-        if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+        //if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
+
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -167,7 +174,6 @@ public class BoardServiceImpl implements BoardService {
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
         Comment comment = new Comment();
-        comment.setContents(contents);
         if(boardMapper.checkBoardByUserId(user_id)) {
             comment.setBoard_id(boardMapper.getBoardByUserId(user_id).getId());
         }
@@ -176,14 +182,14 @@ public class BoardServiceImpl implements BoardService {
         }
         else
             throw new BoardException(ErrorCode.Party_Not_Exists); // 속해있는 파티가 없음
-
+        checkValue.checkComment(contents); // 길이 체크
+        comment.setContents(contents);
         comment.setWriter_id(user_id);
         boardMapper.addComment(comment);
     }
     // 댓글 수정
     public void updateComment(Long comment_id, String contents) throws Exception { // Auth
         if(comment_id == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
-        if(contents == null) throw new BoardException(ErrorCode.Contents_Is_Null);
         if(!boardMapper.checkCommentById(comment_id))
             throw new BoardException(ErrorCode.Comment_Not_Found); // 잘못된 comment id
 
@@ -198,6 +204,7 @@ public class BoardServiceImpl implements BoardService {
         if(target_comment.getWriter_id() != user_id)
             throw new BoardException(ErrorCode.Comment_Invalid_Access); // 자신이 쓴 댓글이 아님
         else {
+            checkValue.checkComment(contents); // 길이 체크
             target_comment.setContents(contents);
             boardMapper.updateComment(target_comment);
         }

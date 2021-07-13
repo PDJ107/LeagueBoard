@@ -1,10 +1,13 @@
 package domain;
 
+import exception.BoardException;
+import exception.ErrorCode;
+
 public class Board {
     protected Long id;
     protected Long admin_id;
-    protected String title;
-    protected String contents;
+    protected String title; // 1 ~ 20
+    protected String contents; // 1 ~ 150
     protected String post_time; // 나중에 타입 체크
     protected Integer mean_score;
 
