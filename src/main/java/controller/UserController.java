@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.UserService;
 
+import java.util.HashMap;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
