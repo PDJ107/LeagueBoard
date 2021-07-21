@@ -11,8 +11,8 @@ public class Comment {
     protected Long writer_id;
     protected Long board_id;
 
-    @NotNull
-    @Size(min = 1, max = 50)
+    @NotNull(message = "contents가 Null입니다.")
+    @Size(min = 1, max = 50, message = "comment는 최소값 1과(와) 최대값 50 사이의 크기이어야 합니다.")
     protected String contents; // 1 ~ 50
 
     protected String post_time; // 나중에 타입 체크
