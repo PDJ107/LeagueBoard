@@ -10,7 +10,11 @@ import javax.validation.constraints.Size;
 public class Search {
     protected Boolean score;
     protected Boolean empty;
+
+    //@Min(value = 1) @Max(value = 20)
     protected Integer count;
+
+    //@Min(value = 1)
     protected Integer page;
 
     public Search(Boolean score, Boolean empty, Integer count, Integer page) {
