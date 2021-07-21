@@ -35,13 +35,13 @@
         DELETE FROM league_board_db.board WHERE admin_id = #{user_id};
     </delete>
 
-    <select id="getBoardList2" parameterType="domain.Search" resultType="domain.Board">
+    <select id="getBoardList2" parameterType="hashmap" resultType="domain.Board">
         SELECT * FROM league_board_db.board as b
         <if test="empty">
         WHERE (SELECT COUNT(*) FROM league_board_db.member as m WHERE b.id = m.board_id) &lt; 4
         </if>
         <if test="score">
-        ORDER BY ABS(mean_score-#{tierScore}) ASC
+        ORDER BY ABS(mean_score-#{tierScore}), b.id ASC
         </if>
         LIMIT #{start}, #{count};
     </select>

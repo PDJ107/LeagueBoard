@@ -2,8 +2,10 @@ package repository;
 
 import domain.*;
 ;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -15,7 +17,7 @@ public interface BoardMapper {
     void updateBoard(Board board);
     void updateBoardScore(Board board);
     void deleteBoardByUserId(Long user_id);
-    List<Board> getBoardList2(Search search);
+    List<Board> getBoardList2(HashMap<String,Object> searchMap);
     BoardInfo getBoard(Long board_id);
     Board getBoardByUserId(Long user_id);
 

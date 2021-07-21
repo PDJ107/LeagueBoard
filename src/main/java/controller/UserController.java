@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.UserService;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -76,15 +76,15 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "로그인", notes = "account 와 password 를 검사하고 토큰을 반환합니다.")
-    public ResponseEntity checkUser(@RequestBody User user) throws Exception{
+    public ResponseEntity checkUser(@RequestBody @Valid User user) throws Exception{
         return new ResponseEntity(userService.loginUser(user), HttpStatus.CREATED); // 클라이언트 응답 메소드
     }
 
     // 회원가입 (user를 db에 추가한 후 토큰 발급)
     @ResponseBody
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ApiOperation(value = "회원가입", notes = "유저를 등록합니다. 이때 소환사 이름이 실제로 존재해야 합니다.")
-    public ResponseEntity addUser(@RequestBody User user) throws Exception{
+    public ResponseEntity addUser(@RequestBody @Valid User user) throws Exception{
         return new ResponseEntity(userService.addUser(user), HttpStatus.CREATED); // 클라이언트 응답 메소드
     }
 
@@ -103,7 +103,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/report", method = RequestMethod.POST)
     @ApiOperation(value = "유저 신고", notes = "특정 유저를 신고합니다. perpetrator_id (가해자 id) 와 code (신고 사유) 가 필요합니다.")
-    public ResponseEntity reportUser(@RequestBody Report reportData) throws Exception {
+    public ResponseEntity reportUser(@RequestBody @Valid Report reportData) throws Exception {
         userService.reportUser(reportData);
         return new ResponseEntity(HttpStatus.OK);
     }

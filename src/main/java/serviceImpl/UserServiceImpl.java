@@ -1,6 +1,5 @@
 package serviceImpl;
 
-import com.sun.tools.javac.comp.Check;
 import domain.*;
 import exception.ErrorCode;
 import exception.UserException;
@@ -13,12 +12,10 @@ import repository.UserMapper;
 import service.BoardService;
 import service.RiotApiService;
 import service.UserService;
-import util.CheckValue;
 import util.JwtUtil;
 import util.TierScore;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,14 +35,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TierScore tierScore;
 
-    @Autowired
-    private CheckValue checkValue;
-
     public List<UserInfo> getUserList() throws Exception {
         return userMapper.getUserList();
     }
-
-
+    
     // User 정보 반환 by token
     public User getUser() throws Exception {
         HttpServletRequest request =
@@ -75,16 +68,10 @@ public class UserServiceImpl implements UserService {
 
     // User 추가 : 토큰 반환
     public String addUser(User user) throws Exception {
-        // account 예외처리
-        checkValue.checkAccount(user.getAccount());
-
-        // password 예외처리
-        //if(user.getPassword() == null) throw new UserException(ErrorCode.Password_Is_Null);
-        checkValue.checkPassword(user.getPassword());
-
         // 소환사이름 예외처리
-        //if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
-        checkValue.checkSummonerName(user.getSummoner_name());
+        if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
+        else if(user.getSummoner_name().length() > 20)
+            throw new UserException(ErrorCode.Summoner_Name_Not_Valid);
 
         if(userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.Account_Already_Exists); // account 중복
@@ -108,9 +95,6 @@ public class UserServiceImpl implements UserService {
 
     // User 정보 업데이트 by token
     public void updateUser(User user) throws Exception {
-        // 유저 정보 예외처리 (예: account 8 ~ 15자 제한 등)
-
-
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -120,15 +104,16 @@ public class UserServiceImpl implements UserService {
 
         // account 체크
         if(user.getAccount() != null) {
-            checkValue.checkAccount(user.getAccount()); // 길이 체크
+            if(user.getAccount().length() < 1 || user.getAccount().length() > 20)
+                throw new UserException(ErrorCode.Account_Not_Valid);
             if(userMapper.checkUserByAccount(user.getAccount()))
                 throw new UserException(ErrorCode.Account_Already_Exists); // 이미 존재하는 유저
         }
 
-
         // password 암호화
         if(user.getPassword() != null) {
-            checkValue.checkPassword(user.getPassword()); // 길이 체크
+            if(user.getPassword().length() < 4 || user.getPassword().length() > 20)
+                throw new UserException(ErrorCode.Password_Not_Valid);
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             String pw = encoder.encode(user.getPassword());
             user.setPassword(pw);
@@ -136,7 +121,8 @@ public class UserServiceImpl implements UserService {
 
         if(user.getSummoner_name() != null) {
             // summoner_name 체크
-            checkValue.checkSummonerName(user.getSummoner_name());
+            if(user.getSummoner_name().length() > 20)
+                throw new UserException(ErrorCode.Summoner_Name_Not_Valid);
             if(!riotApiService.checkSummoner(user.getSummoner_name()))
                 throw new UserException(ErrorCode.Summoner_Not_Found); // 잘못된 summoner_name
             updateUserInfo(user_id);
@@ -196,12 +182,6 @@ public class UserServiceImpl implements UserService {
 
     // 로그인 : 토큰 반환
     public String loginUser(User user) throws Exception {
-        // account null 예외처리
-        checkValue.checkAccount(user.getAccount());
-
-        // password null 예외처리
-        checkValue.checkPassword(user.getPassword());
-
         if(!userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.User_Invalid_Request);
         User userdata = userMapper.getUserByAccount(user.getAccount());
@@ -215,13 +195,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public void reportUser(Report report) throws Exception {
-        if(report.getPerpetrator_id() == null) throw new UserException(ErrorCode.User_Id_Is_Null);
-        if(report.getCode() == null) throw new UserException(ErrorCode.Report_Code_Is_Null);
+        List<ReportCode> reportCodes = userMapper.getReportCodes();
 
-        List<ReportCode> reportCodes = new ArrayList<>();
-        reportCodes = userMapper.getReportCodes();
-        // report code 예외처리 ()
-        checkValue.reportCheck(report, reportCodes);
+        Boolean isValid = false;
+        for(int i = 0; i < reportCodes.size(); ++i)
+            if(report.getCode() == reportCodes.get(i).getCode()) isValid = true;
+        if(!isValid) throw new UserException(ErrorCode.Report_Code_Not_Valid);
 
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())

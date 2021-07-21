@@ -13,11 +13,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import repository.BoardMapper;
 import service.BoardService;
 import service.UserService;
-import util.CheckValue;
 import util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -31,15 +31,8 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private CheckValue checkValue;
-
     // 모집글(파티) 작성
     public void addBoard(Board board) throws Exception { // Auth
-        checkValue.checkTitle(board.getTitle());
-
-        checkValue.checkContents(board.getContents());
-
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -70,8 +63,16 @@ public class BoardServiceImpl implements BoardService {
 
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
-            if(board.getTitle() != null) checkValue.checkTitle(board.getTitle());
-            if(board.getContents() != null) checkValue.checkContents(board.getContents());
+            if(board.getTitle() != null) {
+                // 길이 예외처리
+                if(board.getTitle().length() < 1 || board.getTitle().length() > 20)
+                    throw new BoardException(ErrorCode.Title_Not_Valid);
+            }
+            if(board.getContents() != null) {
+                // 길이 예외처리
+                if(board.getContents().length() < 1 || board.getContents().length() > 150)
+                    throw new BoardException(ErrorCode.Contents_Not_Valid);
+            }
             board.setAdmin_id(user_id);
             boardMapper.updateBoard(board);
         }
@@ -112,16 +113,27 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public List<Board> getBoardList(Search search) throws Exception {  // Auth
-        checkValue.checkSearch(search); // 예외 검사
+        // 예외 검사
+        if(search.getPage() == null) throw new BoardException(ErrorCode.PageNum_Is_Null);
+        else if(search.getCount() < 1 || search.getCount() > 20) throw new BoardException(ErrorCode.PageCount_Not_Valid);
+        else if(search.getPage() < 1) throw new BoardException(ErrorCode.PageNum_Not_Valid);
+
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         UserInfo userInfo = userService.getUserInfoById(user_id);
-        search.setTierScore(userInfo.getSummonerInfo().getScore());
 
-        return boardMapper.getBoardList2(search);
+        HashMap<String, Object> searchMap = new HashMap<>();
+
+        searchMap.put("tierScore", userInfo.getSummonerInfo().getScore());
+        searchMap.put("score", search.getScore());
+        searchMap.put("empty", search.getEmpty());
+        searchMap.put("count", search.getCount());
+        searchMap.put("start", (search.getPage()-1) * search.getCount());
+
+        return boardMapper.getBoardList2(searchMap);
     }
 
     public BoardInfo getBoard(Long board_id) throws Exception {
@@ -155,7 +167,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 댓글 작성
-    public void addComment(String contents) throws Exception { // Auth
+    public void addComment(Comment comment) throws Exception { // Auth
 
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -163,7 +175,6 @@ public class BoardServiceImpl implements BoardService {
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
-        Comment comment = new Comment();
         if(boardMapper.checkBoardByUserId(user_id)) {
             comment.setBoard_id(boardMapper.getBoardByUserId(user_id).getId());
         }
@@ -172,15 +183,13 @@ public class BoardServiceImpl implements BoardService {
         }
         else
             throw new BoardException(ErrorCode.Party_Not_Exists); // 속해있는 파티가 없음
-        checkValue.checkComment(contents); // 길이 체크
-        comment.setContents(contents);
         comment.setWriter_id(user_id);
         boardMapper.addComment(comment);
     }
     // 댓글 수정
-    public void updateComment(Long comment_id, String contents) throws Exception { // Auth
-        if(comment_id == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
-        if(!boardMapper.checkCommentById(comment_id))
+    public void updateComment(Comment comment) throws Exception { // Auth
+        if(comment.getId() == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
+        if(!boardMapper.checkCommentById(comment.getId()))
             throw new BoardException(ErrorCode.Comment_Not_Found); // 잘못된 comment id
 
         HttpServletRequest request =
@@ -189,14 +198,12 @@ public class BoardServiceImpl implements BoardService {
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
 
-        Comment target_comment = boardMapper.getCommentById(comment_id);
+        Comment target_comment = boardMapper.getCommentById(comment.getId());
 
         if(target_comment.getWriter_id() != user_id)
             throw new BoardException(ErrorCode.Comment_Invalid_Access); // 자신이 쓴 댓글이 아님
         else {
-            checkValue.checkComment(contents); // 길이 체크
-            target_comment.setContents(contents);
-            boardMapper.updateComment(target_comment);
+            boardMapper.updateComment(comment);
         }
     }
     // 댓글 삭제

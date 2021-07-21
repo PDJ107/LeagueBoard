@@ -12,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.BoardService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Controller
 @RequestMapping(value = "/board")
 public class BoardController {
@@ -22,7 +26,7 @@ public class BoardController {
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ApiOperation(value = "모집 글(파티) 추가", notes = "참여중인 파티가 없을경우 모집 글을 등록합니다.")
-    public ResponseEntity addBoard(@RequestBody Board board) throws Exception {
+    public ResponseEntity addBoard(@RequestBody @Valid Board board) throws Exception {
         boardService.addBoard(board);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -74,8 +78,8 @@ public class BoardController {
     @ResponseBody
     @RequestMapping(value = "/comment", method = RequestMethod.POST)
     @ApiOperation(value = "댓글 작성", notes = "자신이 속한 모집 글에 댓글을 작성합니다.")
-    public ResponseEntity addComment(@RequestBody String contents) throws Exception {
-        boardService.addComment(contents);
+    public ResponseEntity addComment(@RequestBody @Valid Comment comment) throws Exception {
+        boardService.addComment(comment);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -83,8 +87,9 @@ public class BoardController {
     @ResponseBody
     @RequestMapping(value = "/comment/{comment_id}", method = RequestMethod.PUT)
     @ApiOperation(value = "댓글 수정", notes = "자신이 작성한 댓글을 수정합니다.")
-    public ResponseEntity updateComment(@PathVariable Long comment_id, @RequestBody String contents) throws Exception {
-        boardService.updateComment(comment_id, contents);
+    public ResponseEntity updateComment(@PathVariable @NotNull Long comment_id, @RequestBody @Valid Comment comment) throws Exception {
+        comment.setId(comment_id);
+        boardService.updateComment(comment);
         return new ResponseEntity(HttpStatus.OK);
     }
 

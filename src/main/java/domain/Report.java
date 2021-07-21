@@ -1,9 +1,15 @@
 package domain;
 
+import javax.validation.constraints.NotNull;
+
 public class Report {
     protected Long id;
     protected Long victim_id;
+
+    @NotNull(message = "perpetrator_id가 Null입니다.")
     protected Long perpetrator_id;
+
+    @NotNull(message = "code가 Null입니다.")
     protected Long code;
 
     public Long getId() {

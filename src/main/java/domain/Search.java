@@ -1,19 +1,23 @@
 package domain;
 
+import exception.ErrorCode;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Search {
     protected Boolean score;
     protected Boolean empty;
     protected Integer count;
     protected Integer page;
-    protected Integer start;
-    protected Integer tierScore;
 
     public Search(Boolean score, Boolean empty, Integer count, Integer page) {
         this.score = score;
         this.empty = empty;
         this.count = count;
         this.page = page;
-        start = (page-1) * count;
     }
 
     public Integer getCount() {
@@ -30,22 +34,6 @@ public class Search {
 
     public void setPage(Integer page) {
         this.page = page;
-    }
-
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
-    public Integer getTierScore() {
-        return tierScore;
-    }
-
-    public void setTierScore(Integer tierScore) {
-        this.tierScore = tierScore;
     }
 
     public Boolean getScore() {

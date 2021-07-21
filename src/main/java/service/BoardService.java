@@ -19,9 +19,9 @@ public interface BoardService {
     BoardInfo getBoard() throws Exception; // Auth
 
     // 댓글 작성
-    void addComment(String contents) throws Exception; // Auth
+    void addComment(Comment comment) throws Exception; // Auth
     // 댓글 수정
-    void updateComment(Long comment_id, String contents) throws Exception; // Auth
+    void updateComment(Comment comment) throws Exception; // Auth
     // 댓글 삭제
     void deleteComment(Long comment_id) throws Exception; // Auth
     // 댓글 조회
