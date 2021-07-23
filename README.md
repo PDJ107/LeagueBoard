@@ -24,3 +24,11 @@
     - Mysql 8.0.23
     - Mybatis 3.2.2
     - Riot API https://developer.riotgames.com/apis
+
+
+### DB 구조
+![DB구조.png](./image/DB구조%20%202021-07-24.png)
+  
+
+### API 목록
+![API목록.png](./image/API%20목록%20%202021-07-24.png)
