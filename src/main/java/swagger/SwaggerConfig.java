@@ -33,7 +33,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Beginner_Example_API_Document")
+                .title("LEAGUE_BOARD_API_Document")
                 .description("API 설명")
                 .version("1.0.0")
                 .build();
