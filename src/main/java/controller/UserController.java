@@ -19,14 +19,14 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+/*
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "모든 유저 정보 조회", notes = "모든 유저의 정보를 조회합니다. 소환사 정보와 리그 정보도 포합됩니다.")
     public ResponseEntity getUserList() throws Exception {
         return new ResponseEntity(userService.getUserList(), HttpStatus.OK);
     }
-
+*/
     // 내 정보 가져오기 (토큰 체크)
     @Auth
     @ResponseBody
@@ -91,7 +91,7 @@ public class UserController {
     // 회원탈퇴 (유저 정보 삭제)
     @Auth
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/me", method = RequestMethod.DELETE)
     @ApiOperation(value = "회원탈퇴", notes = "회원을 탈퇴합니다. 자신의 모든 정보가 삭제됩니다.")
     public ResponseEntity deleteUser() throws Exception{
         userService.deleteUser();

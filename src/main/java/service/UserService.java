@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService {
     //User getUserById(Long id) throws Exception;
     //User getUserByAccount(String account) throws Exception;
-    List<UserInfo> getUserList() throws Exception;
+    //List<UserInfo> getUserList() throws Exception;
     // User 정보 반환 by token
     User getUser() throws Exception;
     UserInfo getUserInfo() throws Exception;

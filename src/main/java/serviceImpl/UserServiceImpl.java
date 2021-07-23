@@ -36,9 +36,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TierScore tierScore;
 
-    public List<UserInfo> getUserList() throws Exception {
+    /*public List<UserInfo> getUserList() throws Exception {
         return userMapper.getUserList();
-    }
+    }*/
     
     // User 정보 반환 by token
     @Override
