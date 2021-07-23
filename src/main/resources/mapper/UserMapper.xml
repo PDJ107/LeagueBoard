@@ -86,18 +86,6 @@
         ;
     </select>
 
-    <select id="getReportCodes" resultType="domain.ReportCode">
-        SELECT * FROM league_board_db.report_code;
-    </select>
-
-    <select id="isReported" parameterType="domain.Report" resultType="Boolean">
-        SELECT EXISTS
-            (
-            SELECT * FROM league_board_db.report
-            WHERE victim_id = #{victim_id} AND perpetrator_id = #{perpetrator_id}
-            );
-    </select>
-
 
     <select id="checkUserById" parameterType="Long" resultType="Boolean">
         SELECT EXISTS ( SELECT * FROM league_board_db.user WHERE id = #{id});
@@ -130,7 +118,7 @@
     <delete id="deleteUser" parameterType="Long">
         DELETE FROM league_board_db.league WHERE user_id = #{id};
         DELETE FROM league_board_db.summoner WHERE user_id = #{id};
-        DELETE FROM league_board_db.report WHERE victim_id = #{id} OR perpetrator_id = #{id};
+        UPDATE league_board_db.report SET is_deleted = 1 WHERE victim_id = #{id} OR perpetrator_id = #{id};
         DELETE FROM league_board_db.comment WHERE writer_id = #{id};
         DELETE FROM league_board_db.member WHERE user_id = #{id};
         DELETE FROM league_board_db.board WHERE admin_id = #{id};
@@ -170,6 +158,18 @@
         SET report_num = (SELECT COUNT(*) FROM league_board_db.report WHERE perpetrator_id = #{perpetrator_id})
         WHERE id = #{perpetrator_id};
     </update>
+
+    <select id="getReportCodes" resultType="domain.ReportCode">
+        SELECT * FROM league_board_db.report_code;
+    </select>
+
+    <select id="isReported" parameterType="domain.Report" resultType="Boolean">
+        SELECT EXISTS
+                   (
+                       SELECT * FROM league_board_db.report
+                       WHERE victim_id = #{victim_id} AND perpetrator_id = #{perpetrator_id} AND is_deleted = 0
+                   );
+    </select>
 
 </mapper>
 
