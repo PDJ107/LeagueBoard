@@ -6,6 +6,7 @@ import exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import repository.UserMapper;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
     }
     
     // User 정보 반환 by token
+    @Override
     public User getUser() throws Exception {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
         else return userMapper.getUserById(user_id);
     }
 
+    @Override
     public UserInfo getUserInfo() throws Exception {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
         else return userMapper.getUserInfo(user_id);
     }
 
+    @Override
     public UserInfo getUserInfoById(Long id) throws Exception {
         if(id == null) throw new UserException(ErrorCode.User_Id_Is_Null);
         if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
@@ -67,6 +71,8 @@ public class UserServiceImpl implements UserService {
 
 
     // User 추가 : 토큰 반환
+    @Override
+    @Transactional
     public String addUser(User user) throws Exception {
         // 소환사이름 예외처리
         if(user.getSummoner_name() == null) throw new UserException(ErrorCode.Summoner_Name_Is_Null);
@@ -94,6 +100,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // User 정보 업데이트 by token
+    @Override
+    @Transactional
     public void updateUser(User user) throws Exception {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -134,6 +142,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // riot api 사용, summoner & League 업데이트
+    @Override
+    @Transactional
     public void updateUserInfo(Long id) throws Exception {
         if(id == null) throw new UserException(ErrorCode.User_Id_Is_Null);
         if(!userMapper.checkUserById(id)) throw new UserException(ErrorCode.User_Not_Found);
@@ -164,6 +174,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // User 삭제 (관련 데이터 모두) by token
+    @Override
+    @Transactional
     public void deleteUser() throws Exception {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -181,6 +193,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 로그인 : 토큰 반환
+    @Override
     public String loginUser(User user) throws Exception {
         if(!userMapper.checkUserByAccount(user.getAccount()))
             throw new UserException(ErrorCode.User_Invalid_Request);
@@ -194,6 +207,8 @@ public class UserServiceImpl implements UserService {
         return jwtUtil.genJsonWebToken(userdata.getId());
     }
 
+    @Override
+    @Transactional
     public void reportUser(Report report) throws Exception {
         List<ReportCode> reportCodes = userMapper.getReportCodes();
 
@@ -226,11 +241,9 @@ public class UserServiceImpl implements UserService {
     public List<ReportCode> getReportCodes() {
         return userMapper.getReportCodes();
     }
-
     public Boolean checkUser(Long user_id) {
         return userMapper.checkUserById(user_id);
     }
-
     public Integer getSumOfScore(List<Long> idList) {
         return userMapper.getSumOfScore(idList);
     }

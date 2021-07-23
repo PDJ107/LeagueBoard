@@ -53,13 +53,8 @@ public class RiotApiServiceImpl implements RiotApiService {
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(getRequest);
 
-        //Response 출력
         if (response.getStatusLine().getStatusCode() == 200) {
-            //String json_string = EntityUtils.toString(response.getEntity());
-            //JSONObject temp1 = new JSONObject(json_string);
-
             String json = EntityUtils.toString(response.getEntity(), "UTF-8");
-            //System.out.println(json);
 
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(json);
@@ -72,9 +67,8 @@ public class RiotApiServiceImpl implements RiotApiService {
 
             return summoner;
         }
-        // exception 처리
         else {
-            System.out.println("response is error : " + response.getStatusLine().getStatusCode());
+            //System.out.println("response is error : " + response.getStatusLine().getStatusCode());
             throw new RiotApiException(ErrorCode.RiotApi_Request_Failed, HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
         }
     }
@@ -91,7 +85,6 @@ public class RiotApiServiceImpl implements RiotApiService {
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(getRequest);
 
-        //Response 출력
         if (response.getStatusLine().getStatusCode() == 200) {
             String json = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.println(json);
@@ -131,7 +124,6 @@ public class RiotApiServiceImpl implements RiotApiService {
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(getRequest);
 
-        //Response 출력
         if (response.getStatusLine().getStatusCode() == 200) {
             return true;
         }

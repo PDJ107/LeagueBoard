@@ -6,7 +6,6 @@ import exception.ErrorCode;
 import exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,7 +16,6 @@ import service.UserService;
 import util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,29 +33,32 @@ public class BoardServiceImpl implements BoardService {
     private UserService userService;
 
     // 모집글(파티) 작성
+    @Override
+    @Transactional
     public void addBoard(Board board) throws Exception { // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         Long user_id = jwtUtil.getIdFromToken(request.getHeader("Authorization"));
         if(!userService.checkUser(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
+
         // 예외 : 파티에 속해있는지 체크
         if(boardMapper.checkMemberByUserId(user_id) || boardMapper.checkBoardByUserId(user_id))
             throw new BoardException(ErrorCode.Party_Already_Exists); // 이미 참가중
         else {
             UserInfo userInfo = userService.getUserInfoById(user_id);
-
             board.setAdmin_id(user_id);
 
             // mean_score 추가
             board.setMean_score(userInfo.getSummonerInfo().getScore());
-
             boardMapper.addBoard(board);
         }
     }
+
     // 모집글(파티) 수정 (title or contents)
+    @Override
+    @Transactional
     public void updateBoard(Board board) throws Exception { // Auth
-        //
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -81,6 +82,8 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    @Override
+    @Transactional
     public void updateBoardScore(Long board_id) throws Exception {
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
@@ -101,6 +104,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 모집글(파티) 삭제
+    @Override
+    @Transactional
     public void deleteBoard() throws Exception { // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -115,8 +120,8 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    @Override
     public List<Board> getBoardList(Search search) throws Exception {  // Auth
-        // 예외 검사
         if(search.getPage() == null) throw new BoardException(ErrorCode.PageNum_Is_Null);
         else if(search.getCount() < 1 || search.getCount() > 20) throw new BoardException(ErrorCode.PageCount_Not_Valid);
         else if(search.getPage() < 1) throw new BoardException(ErrorCode.PageNum_Not_Valid);
@@ -139,6 +144,7 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getBoardList2(searchMap);
     }
 
+    @Override
     public BoardInfo getBoard(Long board_id) throws Exception {
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
@@ -148,6 +154,7 @@ public class BoardServiceImpl implements BoardService {
         return boardInfo;
     }
 
+    @Override
     public BoardInfo getBoard() throws Exception {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -170,8 +177,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 댓글 작성
+    @Override
+    @Transactional
     public void addComment(Comment comment) throws Exception { // Auth
-
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
@@ -189,7 +197,10 @@ public class BoardServiceImpl implements BoardService {
         comment.setWriter_id(user_id);
         boardMapper.addComment(comment);
     }
+
     // 댓글 수정
+    @Override
+    @Transactional
     public void updateComment(Comment comment) throws Exception { // Auth
         if(comment.getId() == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
         if(!boardMapper.checkCommentById(comment.getId()))
@@ -209,7 +220,10 @@ public class BoardServiceImpl implements BoardService {
             boardMapper.updateComment(comment);
         }
     }
+
     // 댓글 삭제
+    @Override
+    @Transactional
     public void deleteComment(Long comment_id) throws Exception { // Auth
         if(comment_id == null) throw new BoardException(ErrorCode.Comment_Id_Is_Null);
         if(!boardMapper.checkCommentById(comment_id))
@@ -226,7 +240,9 @@ public class BoardServiceImpl implements BoardService {
         if(target_comment.getWriter_id() != user_id) throw new BoardException(ErrorCode.Comment_Invalid_Access); // 자신이 쓴 댓글이 아님
         else boardMapper.deleteComment(comment_id); // soft delete
     }
+
     // 댓글 조회
+    @Override
     public List<Comment> getComment(Long board_id) throws Exception {
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
@@ -237,6 +253,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 강퇴
+    @Override
+    @Transactional
     public void deleteUserAtParty(Long target_user_id) throws Exception { // Auth
         if(target_user_id == null) throw new BoardException(ErrorCode.User_Id_Is_Null);
         HttpServletRequest request =
@@ -262,6 +280,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 모든 유저 강퇴
+    @Override
+    @Transactional
     public void deleteAllUserAtParty() throws Exception { // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -276,7 +296,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 참가
-    @Transactional(isolation = Isolation.DEFAULT) //
+    @Override
+    @Transactional
     public void enterParty(Long board_id) throws Exception { // Auth
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
@@ -304,6 +325,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 나감
+    @Override
+    @Transactional
     public void exitParty() throws Exception { // Auth
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -329,6 +352,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 파티 조회
+    @Override
     public List<Member> getPartyMember(Long board_id) throws Exception {
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
