@@ -27,4 +27,5 @@
   
 
 ### API 목록
-![API목록.png](./image/API%20목록%20%202021-07-24.png)
+![API 목록  2021-07-24](https://user-images.githubusercontent.com/68656752/126846425-5096b4b8-30e0-4afd-9ac6-2e22e3ec098b.png)
+
