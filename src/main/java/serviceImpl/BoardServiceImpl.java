@@ -115,8 +115,10 @@ public class BoardServiceImpl implements BoardService {
         if(!boardMapper.checkBoardByUserId(user_id)) throw new BoardException(ErrorCode.Board_Not_Found); // 보드가 없음
         else {
             // 모든 멤버 강퇴
-            boardMapper.deleteAllMember(boardMapper.getBoardByUserId(user_id).getId());
+            Long board_id = boardMapper.getBoardByUserId(user_id).getId();
+            boardMapper.deleteAllMember(board_id);
             boardMapper.deleteBoardByUserId(user_id);
+            boardMapper.deleteAllComment(board_id);
         }
     }
 
@@ -306,7 +308,7 @@ public class BoardServiceImpl implements BoardService {
         if(board_id == null) throw new BoardException(ErrorCode.Board_Id_Is_Null);
         if(!boardMapper.checkBoardById(board_id))
             throw new BoardException(ErrorCode.Board_Not_Found); // 잘못된 id
-        else if(boardMapper.getMemberNumById(board_id) >= 5)
+        else if(boardMapper.getMemberNumById(board_id) >= 4)
             throw new BoardException(ErrorCode.Party_Is_Full); // 자리가 없음
 
         HttpServletRequest request =
@@ -365,5 +367,18 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getMemberList(board_id);
     }
 
+    // user 삭제시 사용
+    @Override
+    public void deleteUserById(Long user_id) throws Exception{
+        if(boardMapper.checkMemberByUserId(user_id)) {// 멤버로 참가중일 경우
+            Member member = new Member();
+            Long board_id = boardMapper.getMemberByUserId(user_id).getBoard_id();
 
+            member.setUser_id(user_id);
+            member.setBoard_id(board_id);
+            boardMapper.deleteMember(member);
+            updateBoardScore(board_id);
+            boardMapper.updateMemberNum(board_id);
+        }
+    }
 }

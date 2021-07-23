@@ -101,8 +101,12 @@
         UPDATE league_board_db.comment SET is_deleted = 1 WHERE id = #{comment_id};
     </update>
 
+    <update id="deleteAllComment" parameterType="Long">
+        UPDATE league_board_db.comment SET is_deleted = 1 WHERE board_id = #{board_id};
+    </update>
+
     <select id="getCommentById" parameterType="Long" resultType="domain.Comment">
-        SELECT * FROM league_board_db.comment WHERE id = #{comment_id};
+        SELECT * FROM league_board_db.comment WHERE id = #{comment_id} AND is_deleted = 0;
     </select>
 
     <select id="getCommentList" parameterType="Long" resultType="domain.Comment">
@@ -140,13 +144,13 @@
     </select>
 
     <select id="getMemberNumById" parameterType="Long" resultType="Integer">
-        SELECT COUNT(*)+1 FROM league_board_db.member WHERE board_id = #{board_id};
+        SELECT COUNT(*) FROM league_board_db.member WHERE board_id = #{board_id};
     </select>
 
     <update id="updateMemberNum" parameterType="Long">
         UPDATE league_board_db.board
         SET member_num =
-                (SELECT COUNT(*)+1 FROM league_board_db.member WHERE board_id = #{board_id})
+                (SELECT COUNT(*) FROM league_board_db.member WHERE board_id = #{board_id})
         WHERE id = #{board_id};
     </update>
 

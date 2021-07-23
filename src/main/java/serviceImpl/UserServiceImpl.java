@@ -185,10 +185,8 @@ public class UserServiceImpl implements UserService {
         if(!userMapper.checkUserById(user_id)) throw new UserException(ErrorCode.Invalid_Token_User_Id);
         else {
             boardService.deleteAllUserAtParty();
+            boardService.deleteUserById(user_id);
             userMapper.deleteUser(user_id);
-
-            // 토큰 로그아웃 처리
-            //jwtUtil.logoutToken(request.getHeader("Authorization"));
         }
     }
 

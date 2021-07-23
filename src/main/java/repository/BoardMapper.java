@@ -27,6 +27,7 @@ public interface BoardMapper {
     void addComment(Comment comment);
     void updateComment(Comment comment);
     void deleteComment(Long comment_id);
+    void deleteAllComment(Long board_id);
     Comment getCommentById(Long comment_id);
     List<Comment> getCommentList(Long board_id);
 

@@ -84,7 +84,7 @@ public class BoardController {
 
     @Auth
     @ResponseBody
-    @RequestMapping(value = "/comments/{comment_id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/comments/{comment_id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "댓글 수정", notes = "자신이 작성한 댓글을 수정합니다.")
     public ResponseEntity updateComment(@PathVariable @NotNull Long comment_id, @RequestBody @Valid Comment comment) throws Exception {
         comment.setId(comment_id);

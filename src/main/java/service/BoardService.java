@@ -37,4 +37,6 @@ public interface BoardService {
     void exitParty() throws Exception; // Auth
     // 파티 조회
     List<Member> getPartyMember(Long board_id) throws Exception;
+
+    void deleteUserById(Long user_id) throws Exception;
 }
