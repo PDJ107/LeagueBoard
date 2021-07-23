@@ -121,7 +121,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<Board> getBoardList(Search search) throws Exception {  // Auth
+    public HashMap<String, Object> getBoardList(Search search) throws Exception {  // Auth
         if(search.getPage() == null) throw new BoardException(ErrorCode.PageNum_Is_Null);
         else if(search.getCount() < 1 || search.getCount() > 20) throw new BoardException(ErrorCode.PageCount_Not_Valid);
         else if(search.getPage() < 1) throw new BoardException(ErrorCode.PageNum_Not_Valid);
@@ -134,14 +134,18 @@ public class BoardServiceImpl implements BoardService {
         UserInfo userInfo = userService.getUserInfoById(user_id);
 
         HashMap<String, Object> searchMap = new HashMap<>();
-
         searchMap.put("tierScore", userInfo.getSummonerInfo().getScore());
         searchMap.put("score", search.getScore());
         searchMap.put("empty", search.getEmpty());
         searchMap.put("count", search.getCount());
         searchMap.put("start", (search.getPage()-1) * search.getCount());
 
-        return boardMapper.getBoardList2(searchMap);
+        HashMap<String, Object> retBoardList = new HashMap<>();
+        retBoardList.put("totalBoardNum", boardMapper.getBoardNum());
+        retBoardList.put("search", search);
+        retBoardList.put("boardList", boardMapper.getBoardList2(searchMap));
+
+        return retBoardList;
     }
 
     @Override

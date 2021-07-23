@@ -2,6 +2,7 @@ package service;
 
 import domain.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface BoardService {
@@ -14,7 +15,7 @@ public interface BoardService {
     // 모집글(파티) 삭제
     void deleteBoard() throws Exception; // Auth
     // 글 목록 검색
-    List<Board> getBoardList(Search search) throws Exception;  // Auth
+    HashMap<String, Object> getBoardList(Search search) throws Exception;  // Auth
     BoardInfo getBoard(Long board_id) throws Exception;
     BoardInfo getBoard() throws Exception; // Auth
 

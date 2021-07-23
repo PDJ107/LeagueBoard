@@ -20,6 +20,7 @@ public interface BoardMapper {
     List<Board> getBoardList2(HashMap<String,Object> searchMap);
     BoardInfo getBoard(Long board_id);
     Board getBoardByUserId(Long user_id);
+    Integer getBoardNum();
 
     // comment
     boolean checkCommentById(Long comment_id);

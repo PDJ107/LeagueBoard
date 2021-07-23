@@ -79,6 +79,10 @@
         WHERE admin_id = #{user_id};
     </select>
 
+    <select id="getBoardNum" resultType="Integer">
+        SELECT COUNT(*) FROM league_board_db.board;
+    </select>
+
     <select id="checkCommentById" parameterType="Long" resultType="boolean">
         SELECT EXISTS (SELECT * FROM league_board_db.comment WHERE id = #{comment_id});
     </select>
