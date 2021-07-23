@@ -27,7 +27,7 @@
 
 
 ### DB 구조
-![DB구조.png](./image/DB구조%20%202021-07-24.png)
+![DB구조  2021-07-24](https://user-images.githubusercontent.com/68656752/126845999-d7219ea7-90e1-400f-ac32-5922248fe648.png)
   
 
 ### API 목록
