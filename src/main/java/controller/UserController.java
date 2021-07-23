@@ -65,7 +65,7 @@ public class UserController {
 
     // 특정 유저 정보 갱신 (소환사, 리그정보)
     @ResponseBody
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/summoner-league", method = RequestMethod.PUT)
     @ApiOperation(value = "유저 정보 갱신", notes = "특정 유저의 소환사, 리그 정보를 갱신합니다.")
     public ResponseEntity updateUserInfo(@PathVariable Long id) throws Exception{
         userService.updateUserInfo(id);
