@@ -57,9 +57,9 @@
                s.id as sid, s.encrypted_name, s.puuid, s.profile_icon_id, s.level, s.score,
                l.id as lid, l.tier, l.rank, l.point, l.wins, l.losses, l.queue_type
         FROM league_board_db.user as u
-                 LEFT OUTER JOIN league_board_db.summoner as s
+                 JOIN league_board_db.summoner as s
                       ON s.user_id = u.id
-                 LEFT OUTER JOIN league_board_db.league as l
+                 LEFT JOIN league_board_db.league as l
                       ON l.user_id = u.id
         WHERE u.id = #{id};
     </select>
@@ -69,9 +69,9 @@
                s.id as sid, s.encrypted_name, s.puuid, s.profile_icon_id, s.level, s.score,
                l.id as lid, l.tier, l.rank, l.point, l.wins, l.losses, l.queue_type
         FROM league_board_db.user as u
-                 LEFT OUTER JOIN league_board_db.summoner as s
+                 JOIN league_board_db.summoner as s
                                  ON s.user_id = u.id
-                 LEFT OUTER JOIN league_board_db.league as l
+                 LEFT JOIN league_board_db.league as l
                                  ON l.user_id = u.id;
     </select>
 

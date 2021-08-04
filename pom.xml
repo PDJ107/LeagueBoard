@@ -16,6 +16,7 @@
 
     <build>
         <!-- <outputDirectory>out/artifacts/SpringTest5_war_exploded/WEB-INF/classes</outputDirectory> -->
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
